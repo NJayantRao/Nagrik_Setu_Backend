@@ -31,4 +31,38 @@ router.post("/signup",async (req,res)=>{
     }
 })
 
+//user login route
+router.get("/login",async(req,res)=>{
+    try {
+        const {uniqueToken,password}= req.body;
+
+    //find user
+    const user= await User.findOne({uniqueToken:uniqueToken})
+
+    //if user doesn't exist
+    if(!user){
+        res.status(401).send("User doesn't exist")
+    }
+
+    //if password is incorrect
+    if(!(await user.comparePassword(password))){
+        res.status(401).send("Incorrect password")
+    }
+    const payload= {
+            id:user.id,
+            email:user.email
+        }
+
+    //jwt token generate
+    const token= generateToken(payload)
+
+    console.log(token);
+    res.status(200).json({uniqueToken:user.uniqueToken,token:token})
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
 export {userRouter}
