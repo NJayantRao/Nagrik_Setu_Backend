@@ -2,6 +2,7 @@ import express from "express"
 
 import { User } from "../models/users.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
+import { sendMail } from "../resendMail.js"
 
 const router= express.Router()
 const userRouter= router
@@ -21,6 +22,8 @@ router.post("/signup",async (req,res)=>{
         // console.log(JSON.stringify(payload));
         const token= generateToken(payload)
         console.log(token);
+
+        sendMail(response.name,response.uniqueToken);
         
         res.status(200).json({uniqueToken:response.uniqueToken,token:token})
         
