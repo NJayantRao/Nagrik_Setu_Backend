@@ -31,18 +31,27 @@ const userSchema= new mongoose.Schema({
         enum:["User","Admin","Staff"],
         default:"User"
     },
-    uniqueId:{
+    uniqueToken:{
         type:String,
-        required:true
+        unique:true
     },
 },
 {timestamps:true});
+
+function generateToken(address){
+    const city= address.toUpperCase().slice(0,4).padEnd(4,"X");
+    // console.log(city);
+    const randomNumber= (10000000+Math.floor(Math.random()*90000000))
+    console.log(randomNumber)
+
+    return `CIV-${city}-${randomNumber}`
+}
 
 userSchema.pre("save", async function() {
     const user= this;
 
     //check if pasword is modified or not
-    if(!user.isModified("password")) return ;
+    if(user.isModified("password")){
 
     //hash password
     try {
@@ -52,15 +61,31 @@ userSchema.pre("save", async function() {
         //hash password with salt
         const hashPassword= await bcrypt.hash(user.password,salt);
         user.password= hashPassword;
-        
+    } catch (error) {
+        console.log(error);   
+    }
+    }
+    //Unique token
+        if(!user.uniqueToken){
+            let exists=true;
+            let tempToken;
+            
+            while(exists){
+                tempToken= generateToken(user.address)
+                exists= await mongoose.models.users.findOne({uniqueToken:tempToken})
+            }
+            user.uniqueToken= tempToken;
+        }
+})
 
+userSchema.methods.comparePassword= async function(userPassword){
+    try {
+        const isMatch= bcrypt.compare(userPassword,this.password)
+        return isMatch
     } catch (error) {
         console.log(error);
-        
-        
     }
-
-})
+}
 
 const User= mongoose.model("users",userSchema);
 

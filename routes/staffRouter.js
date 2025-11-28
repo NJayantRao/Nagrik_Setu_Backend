@@ -1,18 +1,18 @@
 import express from "express"
 
-import { User } from "../models/users.js"
+import { Staff } from "../models/staff.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 
 const router= express.Router()
-const userRouter= router
+const staffRouter= router
 
-//user Signup
-router.post("/signup",async (req,res)=>{
+//staff Signup
+router.post("/register",async (req,res)=>{
     try{
         const data= await req.body
-        const newUser= new User(data)
-        const response= await newUser.save();
-        console.log("User Saved Successfully...");
+        const newStaff= new Staff(data)
+        const response= await newStaff.save();
+        console.log("Staff Saved Successfully...");
 
         const payload= {
             id:response.id,
@@ -22,7 +22,7 @@ router.post("/signup",async (req,res)=>{
         const token= generateToken(payload)
         console.log(token);
         
-        res.status(200).json({uniqueToken:response.uniqueToken,token:token})
+        res.status(200).json({uniqueId:response.uniqueId,token:token})
         
     }catch(error){
         console.log(error);
@@ -31,4 +31,4 @@ router.post("/signup",async (req,res)=>{
     }
 })
 
-export {userRouter}
+export {staffRouter}

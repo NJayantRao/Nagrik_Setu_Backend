@@ -1,22 +1,22 @@
 import express from "express"
 
-import { User } from "../models/users.js"
+import { Complaints } from "../models/complaint.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 
 const router= express.Router()
-const userRouter= router
+const complaintRouter= router
 
-//user Signup
-router.post("/signup",async (req,res)=>{
+//complaint register
+router.post("/register",async (req,res)=>{
     try{
         const data= await req.body
-        const newUser= new User(data)
-        const response= await newUser.save();
-        console.log("User Saved Successfully...");
+        const newComplaint= new Complaints(data)
+        const response= await newComplaint.save();
+        console.log("Complaint Saved Successfully...");
 
         const payload= {
             id:response.id,
-            email:response.email
+            department:response.department
         }
         // console.log(JSON.stringify(payload));
         const token= generateToken(payload)
@@ -31,4 +31,4 @@ router.post("/signup",async (req,res)=>{
     }
 })
 
-export {userRouter}
+export {complaintRouter}

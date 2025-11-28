@@ -5,7 +5,7 @@ import { Department } from "../models/departments.js"
 const router= express.Router()
 const departmentRouter= router
 
-//Add Department 
+//Department Register
 router.post("/register",async (req,res)=>{
     try{
         const data= req.body
