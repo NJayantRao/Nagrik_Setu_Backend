@@ -10,7 +10,7 @@ const resend= new Resend(process.env.RESEND_API);
 
 // Wrap in an async IIFE so we can use await.
 const sendMail= async (name,token) => {
-    let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","Nagrik-Setu Backend","emails","signUp_mail.mjml"),"utf8")
+    let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","emails","signupMailCiv.mjml"),"utf8")
     mjmlTemplate=mjmlTemplate
     .replace(/{{logo_url}}/g,"https://res.cloudinary.com/dpwqlb3d7/image/upload/v1764314433/My%20Brand/Gemini_Generated_Image_o5l8fro5l8fro5l8_s8srd9.png")
     .replace(/{{user_token}}/g,token)

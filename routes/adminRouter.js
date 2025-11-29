@@ -1,6 +1,7 @@
 import express from "express"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 import { Admin } from "../models/admin.js"
+import { sendMail } from "../utils/adminSignupMail.js"
 
 const router= express.Router()
 const adminRouter= router
@@ -33,8 +34,11 @@ router.post("/signup",async (req,res)=>{
             email:response.email
         }
         const token= generateToken(payload)
+
+        sendMail(response.name,response.uniqueId)
+
         res.status(200).json({AdminId:response.uniqueId,token:token})
-        
+
     }catch(error){
         console.log(error);
         res.status(500).send("Internal Server Error...")

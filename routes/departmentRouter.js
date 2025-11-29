@@ -12,6 +12,8 @@ router.post("/register",async (req,res)=>{
         const newDepartment= new Department(data)
         const response= await newDepartment.save();
         console.log(response);
+
+        res.status(200).json({msg:"Department Saved...",id:response.id})
         
     }catch(error){
         console.log(error);

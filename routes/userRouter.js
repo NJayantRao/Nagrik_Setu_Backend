@@ -2,7 +2,7 @@ import express from "express"
 
 import { User } from "../models/users.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
-import { sendMail } from "../resendMail.js"
+import { sendMail } from "../utils/resendMail.js"
 
 const router= express.Router()
 const userRouter= router
@@ -67,5 +67,16 @@ router.get("/login",async(req,res)=>{
         res.status(500).send("Internal Server Error...")
     }
 })
+
+//view profile
+
+
+//change password
+
+//forgot password
+
+//view complaints
+
+//logout
 
 export {userRouter}

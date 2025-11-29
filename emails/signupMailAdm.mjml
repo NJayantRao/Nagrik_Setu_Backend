@@ -1,0 +1,87 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-class name="title" font-size="24px" color="#0A3A7E" font-weight="700" />
+      <mj-class name="text" font-size="15px" color="#4A5568" />
+      <mj-button background-color="#0A3A7E" color="#ffffff" border-radius="5px" padding="12px 24px" />
+    </mj-attributes>
+
+    <mj-preview>Nagrik Setu Admin Access Created</mj-preview>
+  </mj-head>
+
+  <mj-body background-color="#F4F6FA" width="600px">
+
+    <!-- HEADER WITH GRADIENT -->
+    <mj-section background-color="#ffffff" padding="0" border-radius="10px 10px 0 0">
+      <mj-column padding="0">
+        <mj-image src="{{logo_url}}" width="115px" alt="Nagrik Setu Logo" padding="20px 0 10px 0" />
+
+        <mj-text align="center" css-class="title" padding="0 0 10px 0">
+          Welcome, Administrator
+        </mj-text>
+
+        <mj-text align="center" color="#0A3A7E" font-size="13px" padding="0 0 16px 0">
+          <span style="background:#E6EEF9; padding:6px 14px; border-radius:20px; font-weight:600;">
+            Admin Account Created
+          </span>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- MAIN CARD -->
+    <mj-section background-color="#ffffff" padding="20px 24px 26px 24px" border-radius="0 0 10px 10px">
+      <mj-column>
+
+        <mj-text css-class="text">
+          Hello {{name}},
+        </mj-text>
+
+        <mj-text css-class="text" padding="8px 0 14px 0">
+          Your <strong>Nagrik Setu Admin account</strong> is now active.  
+          You can access the admin dashboard and begin monitoring and managing platform activity.
+        </mj-text>
+
+        <!-- UNIQUE ID BOX -->
+        <mj-text padding="4px 0 2px 0" font-size="15px" color="#4A5568">
+          Your Admin Unique ID:
+        </mj-text>
+
+        <mj-section padding="0" background-color="#F0F4FB" border-radius="8px">
+          <mj-column>
+            <mj-text align="center" font-size="18px" font-weight="700" color="#0A3A7E" padding="12px 0">
+              {{uniqueId}}
+            </mj-text>
+          </mj-column>
+        </mj-section>
+
+        <mj-divider border-color="#E2E8F0" padding="20px 0" />
+
+        <mj-text css-class="text">
+          Click below to open your admin dashboard and start managing operations:
+        </mj-text>
+
+        <mj-button href="{{admin_dashboard_link}}" font-size="16px" padding="14px 0">
+          Open Admin Dashboard
+        </mj-button>
+
+        <mj-divider border-color="#E2E8F0" padding="18px 0" />
+
+        <mj-text font-size="14px" color="#718096">
+          If you believe this account was created in error, please contact the platform supervisor immediately.
+        </mj-text>
+
+      </mj-column>
+    </mj-section>
+
+    <!-- FOOTER -->
+    <mj-section padding="16px 0">
+      <mj-column>
+        <mj-text align="center" font-size="13px" color="#A0AEC0">
+          Nagrik Setu — Empowering Administrators for Better Governance.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>
