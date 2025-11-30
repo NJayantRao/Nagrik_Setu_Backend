@@ -14,8 +14,7 @@ const userSchema= new mongoose.Schema({
     password:{
         type:String,
         required:true,
-        minlength:8,
-        maxlength:20
+        minlength:8
     },
     phone:{
         type:Number,
@@ -35,6 +34,14 @@ const userSchema= new mongoose.Schema({
         type:String,
         unique:true
     },
+    otp:{
+        type:String,
+        minlength:6,
+        maxlength:6
+    },
+    otpExpiry:{
+        type:Date,
+    }
 },
 {timestamps:true});
 

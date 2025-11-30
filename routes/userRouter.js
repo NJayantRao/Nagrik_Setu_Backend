@@ -2,7 +2,7 @@ import express from "express"
 
 import { User } from "../models/users.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
-import { sendMail } from "../utils/resendMail.js"
+import { sendMail,forgotPasswordMail } from "../utils/resendMail.js"
 
 const router= express.Router()
 const userRouter= router
@@ -113,6 +113,72 @@ router.put("/profile/changePassword",jwtAuthMiddleware,async (req,res)=>{
 })
 
 //forgot password
+router.get("/forgotPassword",async(req,res)=>{
+    try {
+        const {uniqueToken}= req.body
+
+        const user= await User.findOne({uniqueToken:uniqueToken})
+
+        if(!user)
+            res.status(401).send("User not Found...")
+
+        //function to generate verification code
+        const generateRandomCode= ()=>{
+            return Math.floor(100000 + Math.random()*900000)
+        }
+        const verificationCode= generateRandomCode();
+        // console.log(verificationCode);
+
+        forgotPasswordMail(user.name,verificationCode);
+
+        user.otp=verificationCode.toString();
+        user.otpExpiry= Date.now() + 10*60*1000;
+        await user.save();
+
+        // console.log(user);
+        res.status(200).json({otp:user.otp,expiry:user.otpExpiry})
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
+// //reset password
+router.put("/resetPassword",async(req,res)=>{
+    try {
+        const {uniqueToken,otp,newPassword}= req.body
+
+        const user= await User.findOne({uniqueToken:uniqueToken})
+
+        if(!user)
+            res.status(401).send("User not Found...")
+
+        if(!uniqueToken || !otp || !newPassword)
+            res.status(401).send("Enter all required fields properly...")
+
+        if( user.otp != otp)
+            res.status(401).send("Invalid OTP...")
+
+        if( user.otpExpiry < Date.now())
+            res.status(401).send("OTP Expired...")
+
+        user.password= newPassword
+        
+        //clear otp
+        user.otp= undefined
+        user.otpExpiry= undefined
+        await user.save()
+
+
+        // console.log(user);
+        res.status(200).send("Password Saved Successfully...")
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 
 //view complaints
 
