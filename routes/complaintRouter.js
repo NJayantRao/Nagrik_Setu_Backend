@@ -17,7 +17,7 @@ router.post("/register",upload.single("imageURL"),async (req,res)=>{
     try{
         const data= await req.body
         if (!req.file) {
-      return res.status(400).json({ error: "Image is required" });
+      return res.status(400).json({ error: "Image is required"});
     }
       const cloudinaryResult= await uploadBufferToCloudinary(req.file.buffer,"Nagrik_Setu_Complaints")
       data.imageURL= cloudinaryResult.secure_url;

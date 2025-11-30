@@ -1,8 +1,10 @@
 import express from "express"
+import cookieParser from "cookie-parser"
 
 import { User } from "../models/users.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 import { sendMail,forgotPasswordMail } from "../utils/resendMail.js"
+import { Complaints } from "../models/complaint.js"
 
 const router= express.Router()
 const userRouter= router
@@ -21,12 +23,16 @@ router.post("/signup",async (req,res)=>{
         }
         // console.log(JSON.stringify(payload));
         const token= generateToken(payload)
-        console.log(token);
+        // console.log(token);
 
-        // sendMail(response.name,response.uniqueToken);
-        
-        res.status(200).json({uniqueToken:response.uniqueToken,token:token})
-        
+        const options= {
+            httpOnly:true,
+            secure:true
+        }
+
+        await sendMail(response.name,response.uniqueToken);
+
+        res.status(200).cookie("token",token,options).json({uniqueToken:response.uniqueToken,token:token})
     }catch(error){
         console.log(error);
         res.status(500).send("Internal Server Error...")
@@ -44,12 +50,12 @@ router.post("/login",async(req,res)=>{
 
     //if user doesn't exist
     if(!user){
-        res.status(401).send("User doesn't exist")
+       return res.status(401).send("User doesn't exist")
     }
 
     //if password is incorrect
     if(!(await user.comparePassword(password))){
-        res.status(401).send("Incorrect password")
+       return res.status(401).send("Incorrect password")
     }
     const payload= {
             id:user.id,
@@ -58,9 +64,13 @@ router.post("/login",async(req,res)=>{
 
     //jwt token generate
     const token= generateToken(payload)
+    // console.log(token);
 
-    console.log(token);
-    res.status(200).json({uniqueToken:user.uniqueToken,token:token})
+    const options={
+        httpOnly:true,
+        secure:true
+    }
+    res.status(200).cookie("token",token,options).json({uniqueToken:user.uniqueToken,token:token})
 
     } catch (error) {
         console.log(error);
@@ -89,7 +99,7 @@ router.put("/profile/changePassword",jwtAuthMiddleware,async (req,res)=>{
 
     //Both Password are required
     if(!currentPassword || !newPassword){
-        res.status(401).send("Enter Both Passwords...")
+       return res.status(401).send("Enter Both Passwords...")
     }
     const userId= req.user.id
     const user= await User.findById(userId)
@@ -97,7 +107,7 @@ router.put("/profile/changePassword",jwtAuthMiddleware,async (req,res)=>{
     const isMatch= await user.comparePassword(currentPassword)
     //If password is incorrect
     if(!isMatch){
-        res.status(401).send("Incorrect Password...")
+       return res.status(401).send("Incorrect Password...")
     }
 
     user.password= newPassword;
@@ -113,14 +123,14 @@ router.put("/profile/changePassword",jwtAuthMiddleware,async (req,res)=>{
 })
 
 //forgot password
-router.get("/forgotPassword",async(req,res)=>{
+router.post("/forgotPassword",async(req,res)=>{
     try {
         const {uniqueToken}= req.body
 
         const user= await User.findOne({uniqueToken:uniqueToken})
 
         if(!user)
-            res.status(401).send("User not Found...")
+           return res.status(401).send("User not Found...")
 
         //function to generate verification code
         const generateRandomCode= ()=>{
@@ -152,16 +162,16 @@ router.put("/resetPassword",async(req,res)=>{
         const user= await User.findOne({uniqueToken:uniqueToken})
 
         if(!user)
-            res.status(401).send("User not Found...")
+           return res.status(401).send("User not Found...")
 
         if(!uniqueToken || !otp || !newPassword)
-            res.status(401).send("Enter all required fields properly...")
+          return  res.status(401).send("Enter all required fields properly...")
 
         if( user.otp != otp)
-            res.status(401).send("Invalid OTP...")
+           return res.status(401).send("Invalid OTP...")
 
         if( user.otpExpiry < Date.now())
-            res.status(401).send("OTP Expired...")
+          return  res.status(401).send("OTP Expired...")
 
         user.password= newPassword
         
@@ -181,7 +191,38 @@ router.put("/resetPassword",async(req,res)=>{
 })
 
 //view complaints
+router.get("/profile/complaints",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        const userId= req.user.id
+        const user= await User.findById(userId)
+        // console.log(user);
+        const complaints= await Complaints.find({user:userId})
+
+        res.status(200).send(complaints)
+        
+    }catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 
 //logout
+router.get("/logout",jwtAuthMiddleware,async (req,res) => {
+    try{
+        const userId= req.user.id
+        const user= await User.findById(userId)
+        // console.log(user);
+        const options={
+        httpOnly:true,
+        secure:true
+    }
+
+        res.status(200).clearCookie("token",options).send("Logged Out Successfully...")
+        
+    }catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 
 export {userRouter}
