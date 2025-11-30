@@ -16,7 +16,7 @@ try{
 }
 }
 
-// if(!checkAdmin(req.user.id)){
+// if(!checkAdmin(req.user)){
 //             console.log("Only Admin can access");
 //             res.status(401).send("Unauthorized Only Admin can Access...")
             
@@ -35,7 +35,7 @@ router.post("/signup",async (req,res)=>{
         }
         const token= generateToken(payload)
 
-        sendMail(response.name,response.uniqueId)
+        // sendMail(response.name,response.uniqueId)
 
         res.status(200).json({AdminId:response.uniqueId,token:token})
 
