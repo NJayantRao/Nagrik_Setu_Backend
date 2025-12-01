@@ -12,42 +12,44 @@
 
   <mj-body background-color="#F4F6FA" width="600px">
 
-    <!-- HEADER WITH GRADIENT -->
-    <mj-section background-color="#ffffff" padding="0" border-radius="10px 10px 0 0">
-      <mj-column padding="0">
-        <mj-image src="{{logo_url}}" width="115px" alt="Nagrik Setu Logo" padding="20px 0 10px 0" />
+    <!-- HEADER -->
+    <mj-section background-color="#ffffff" padding="20px 0 10px 0" border-radius="10px 10px 0 0">
+      <mj-column>
+        <mj-image src="{{logo_url}}" width="115px" alt="Nagrik Setu Logo" padding="0 0 10px 0" />
 
-        <mj-text align="center" css-class="title" padding="0 0 10px 0">
+        <mj-text align="center" css-class="title" padding="0 0 8px 0">
           Welcome, Administrator
         </mj-text>
 
-        <mj-text align="center" color="#0A3A7E" font-size="13px" padding="0 0 16px 0">
-          <span style="background:#E6EEF9; padding:6px 14px; border-radius:20px; font-weight:600;">
+        <mj-text align="center" font-size="13px" padding="0 0 14px 0">
+          <span style="background:#E6EEF9; padding:6px 14px; border-radius:20px; font-weight:600; color:#0A3A7E;">
             Admin Account Created
           </span>
         </mj-text>
       </mj-column>
     </mj-section>
 
-    <!-- MAIN CARD -->
+    <!-- MAIN BODY CARD -->
     <mj-section background-color="#ffffff" padding="20px 24px 26px 24px" border-radius="0 0 10px 10px">
       <mj-column>
 
-        <mj-text css-class="text">
+        <!-- FIXED ALIGNMENT -->
+        <mj-text css-class="text" padding="0 0 10px 0">
           Hello {{name}},
         </mj-text>
 
-        <mj-text css-class="text" padding="8px 0 14px 0">
+        <mj-text css-class="text" padding="0 0 14px 0">
           Your <strong>Nagrik Setu Admin account</strong> is now active.  
           You can access the admin dashboard and begin monitoring and managing platform activity.
         </mj-text>
 
-        <!-- UNIQUE ID BOX -->
-        <mj-text padding="4px 0 2px 0" font-size="15px" color="#4A5568">
+        <!-- UNIQUE ID LABEL -->
+        <mj-text padding="0 0 4px 0" font-size="15px" color="#4A5568">
           Your Admin Unique ID:
         </mj-text>
 
-        <mj-section padding="0" background-color="#F0F4FB" border-radius="8px">
+        <!-- UNIQUE ID BOX -->
+        <mj-section padding="0" background-color="#F0F4FB" border-radius="8px" border="1px solid #D6E0EA">
           <mj-column>
             <mj-text align="center" font-size="18px" font-weight="700" color="#0A3A7E" padding="12px 0">
               {{uniqueId}}
@@ -57,7 +59,7 @@
 
         <mj-divider border-color="#E2E8F0" padding="20px 0" />
 
-        <mj-text css-class="text">
+        <mj-text css-class="text" padding="0 0 12px 0">
           Click below to open your admin dashboard and start managing operations:
         </mj-text>
 
@@ -67,7 +69,7 @@
 
         <mj-divider border-color="#E2E8F0" padding="18px 0" />
 
-        <mj-text font-size="14px" color="#718096">
+        <mj-text font-size="14px" color="#718096" padding="0">
           If you believe this account was created in error, please contact the platform supervisor immediately.
         </mj-text>
 

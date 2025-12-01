@@ -37,7 +37,7 @@ const forgotPasswordMail= async (name,token) => {
     let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","emails","forgotPasswordCiv.mjml"),"utf8")
     mjmlTemplate=mjmlTemplate
     .replace(/{{logo_url}}/g,"https://res.cloudinary.com/dpwqlb3d7/image/upload/v1764314433/My%20Brand/Gemini_Generated_Image_o5l8fro5l8fro5l8_s8srd9.png")
-    .replace(/{{token}}/g,token)
+    .replace(/{{otp}}/g,token)
     .replace(/{{name}}/g,name)
 
     //Convert mjml to html

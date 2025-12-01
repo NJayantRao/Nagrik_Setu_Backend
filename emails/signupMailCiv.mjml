@@ -25,7 +25,9 @@
     <!-- MAIN CONTENT -->
     <mj-section background-color="#ffffff" padding="0 24px 24px 24px" border-radius="0 0 8px 8px">
       <mj-column>
-        <mj-text css-class="text">
+
+        <!-- FIXED ALIGNMENT -->
+        <mj-text css-class="text" padding="16px 0 8px 0">
           Hi {{name}},
         </mj-text>
 
@@ -37,14 +39,18 @@
           Below is your unique citizen token — keep it safe. You may need it for faster complaint tracking and support.
         </mj-text>
 
-        <!-- USER TOKEN BLOCK -->
-        <mj-text align="center" font-size="18px" font-weight="700" color="#0B3D91" padding="16px 0">
-          Your Token: {{user_token}}
-        </mj-text>
+        <!-- TOKEN BOX (NEW) -->
+        <mj-section padding="0" background-color="#F0F4FB" border-radius="10px" border="1px solid #D6E0EA">
+          <mj-column>
+            <mj-text align="center" font-size="18px" font-weight="700" color="#0B3D91" padding="14px 0">
+              {{user_token}}
+            </mj-text>
+          </mj-column>
+        </mj-section>
 
-        <mj-divider border-color="#E2E8F0" padding="12px 0" />
+        <mj-divider border-color="#E2E8F0" padding="16px 0" />
 
-        <!-- OPTIONAL LINKS -->
+        <!-- QUICK LINKS -->
         <mj-text css-class="text" padding="0 0 12px 0">
           Quick links to get you started:
         </mj-text>
@@ -53,6 +59,7 @@
           • <a href="{{dashboard_link}}" style="color:#0B3D91; text-decoration:none;">Visit your dashboard</a><br />
           • <a href="{{help_center_link}}" style="color:#0B3D91; text-decoration:none;">Help & Support</a>
         </mj-text>
+
       </mj-column>
     </mj-section>
 
