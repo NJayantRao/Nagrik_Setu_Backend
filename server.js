@@ -24,7 +24,7 @@ app.use(express.json())
 const port = process.env.PORT || 3000
 
 app.get('/api/v1/', (req, res) => {    
-  res.send('Hello World!')
+  res.status(200).send('Hello World!')
 })
 
 app.use("/api/v1/user",userRouter)
