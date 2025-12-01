@@ -5,7 +5,8 @@ import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 import { Admin } from "../models/admin.js"
 import { Department } from "../models/departments.js"
 import { Complaints } from "../models/complaint.js"
-import { sendMail,forgotPasswordMail } from "../utils/adminSignupMail.js"
+import { Staff } from "../models/staff.js"
+import { sendMail,forgotPasswordMail,sendStaffMail } from "../utils/adminSignupMail.js"
 
 const router= express.Router()
 const adminRouter= router
@@ -318,10 +319,109 @@ router.delete("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
 
 //3.Staff management routes
 //create Staff 
+router.post("/staff/register",jwtAuthMiddleware,async (req,res)=>{
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const data= req.body
+        const newStaff= new Staff(data)
+        const response= await newStaff.save();
+        // console.log(response);
+        const payload= {
+            id:response.id,
+            email:response.email
+        }
+        const token= generateToken(payload)
+        const options={
+            httpOnly:true,
+            secure:true
+        }
+
+        await sendStaffMail(response.name,response.uniqueId)
+        res.status(200).cookie("token",token,options).json({StaffId:response.uniqueId,token:token})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+        
+    }
+})
+
 //List of all Staff 
-//update Staff 
-//update Staff status
-//delete Staff 
+router.get("/staff",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const staff= await Staff.find().sort({createdAt:-1})
+
+        res.status(200).json({msg:"Staff List is...",staffs:staff})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
+//update Staff info
+router.put("/staff/:staffId",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        //Admin check
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const staffId= req.params.staffId
+        const staff= await Staff.findById(staffId)
+
+        //check whether complaint exists or not
+        if(!staff){
+            return res.status(400).send("Staff doesn't exist...")
+        }
+
+        const updatedInfo= req.body
+
+        const response= await Staff.findByIdAndUpdate(staffId,updatedInfo,{
+            new:true,
+            runValidators:true
+        })
+
+        res.status(200).json({msg:"The Staff Info. updated...",staff:response})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
+//delete Staff
+router.delete("/staff/:staffId",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        //Admin check
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const staffId= req.params.staffId
+        const staff= await Staff.findById(staffId)
+
+        //check whether complaint exists or not
+        if(!staff){
+            return res.status(400).send("Staff doesn't exist...")
+        }
+
+        const response= await Staff.findByIdAndDelete(staffId)
+
+        res.status(200).json({msg:"The Staff Deleted..."})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 
 //4.complaints management routes
 //List of all complaints
@@ -340,6 +440,7 @@ router.get("/complaints",jwtAuthMiddleware,async(req,res)=>{
         res.status(500).send("Internal Server Error...")
     }
 })
+
 // get complaints by id
 router.get("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
     try{
@@ -371,7 +472,7 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
         }
         const complaintId= req.params.complaintId
         const complaint= await Complaints.findById(complaintId)
-
+       
         //check whether complaint exists or not
         if(!complaint){
             return res.status(400).send("Complaints doesn't exist...")
@@ -395,6 +496,17 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
         const status= allowedStatuses[next]
         complaint.status= status
         await complaint.save()
+
+        //if resolved then make staff available 
+        if(allowedStatuses[next] === "Resolved"){
+            const staffId= complaint.assignedTo
+            const staff= await Staff.findById(staffId)
+
+            if(!staff)
+                res.status(400).send("Staff doesn't exist...")
+            staff.isActive=false;
+            await staff.save()
+        }
 
         res.status(200).json({msg:"The Complaint status updated...",status:status})
 
@@ -432,6 +544,16 @@ router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,
         complaint.status= "Rejected"
         await complaint.save()
 
+        //if rejected then make staff available 
+       if(complaint.assignedTo){
+            const staffId= complaint.assignedTo
+            const staff= await Staff.findById(staffId)
+
+            if(staff)
+            staff.isActive=false;
+            await staff.save()
+        }
+
         res.status(200).json({msg:"The Complaint Rejected...",status:complaint.status})
 
     }catch(error){
@@ -441,6 +563,45 @@ router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,
 })
 
 //update complaints assign staff
+router.put("/complaints/:complaintId/assignedTo/:staffId",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        //Admin check
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const complaintId= req.params.complaintId
+        const complaint= await Complaints.findById(complaintId)
+        //check whether complaint exists or not
+        if(!complaint){
+            return res.status(400).send("Complaints doesn't exist...")
+        }
+
+        const staffId= req.params.staffId
+        const staff= await Staff.findById(staffId)
+        //check whether staff exists or not
+        if(!staff){
+            return res.status(400).send("Staff doesn't exist...")
+        }
+
+        //if staff already assigned
+        if(staff.isActive)
+             res.status(400).send("Staff already assigned...")
+
+        complaint.assignedTo= staffId
+        await complaint.save()
+
+        staff.isActive= true;
+        await staff.save()
+ 
+        res.status(200).json({msg:"The Complaint is...",complaint:complaint})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
 //delete complaints 
 router.delete("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
     try{

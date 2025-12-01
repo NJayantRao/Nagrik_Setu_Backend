@@ -57,5 +57,27 @@ const forgotPasswordMail= async (name,token) => {
 //   console.log("Message sent:", info.messageId);
 }
 
+const sendStaffMail= async (name,token) => {
+    let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","emails","signupMailStaff.mjml"),"utf8")
+    mjmlTemplate=mjmlTemplate
+    .replace(/{{logo_url}}/g,"https://res.cloudinary.com/dpwqlb3d7/image/upload/v1764314433/My%20Brand/Gemini_Generated_Image_o5l8fro5l8fro5l8_s8srd9.png")
+    .replace(/{{staffId}}/g,token)
+    .replace(/{{name}}/g,name)
 
-export {sendMail,forgotPasswordMail}
+    //Convert mjml to html
+    const htmlOutput= mjml2html(mjmlTemplate).html
+    const info = await resend.emails.send({
+    from: 'onboarding@resend.dev',
+    to: "njayantrao@gmail.com",
+    subject: "Welcome to Nagrik Setu",
+    // text: "Hello world?", // plain‑text body
+    html: `${htmlOutput}`, // HTML body
+  });
+  
+//   console.log(info);
+  // console.log(mjmlTemplate);
+//   console.log(htmlOutput);
+//   console.log("Message sent:", info.messageId);
+}
+
+export {sendMail,forgotPasswordMail,sendStaffMail}
