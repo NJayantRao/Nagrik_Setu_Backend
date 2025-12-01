@@ -139,7 +139,7 @@ router.post("/forgotPassword",async(req,res)=>{
         const verificationCode= generateRandomCode();
         // console.log(verificationCode);
 
-        forgotPasswordMail(user.name,verificationCode);
+        await forgotPasswordMail(user.name,verificationCode);
 
         user.otp=verificationCode.toString();
         user.otpExpiry= Date.now() + 10*60*1000;

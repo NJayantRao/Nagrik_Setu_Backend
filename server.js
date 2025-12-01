@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
 
 app.use("/user",userRouter)
 app.use("/admin",adminRouter)
-app.use("/department",departmentRouter)
 app.use("/staff",staffRouter)
 app.use("/complaints",complaintRouter)
 

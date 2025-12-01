@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser"
 
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 import { Admin } from "../models/admin.js"
+import { Department } from "../models/departments.js"
 import { sendMail,forgotPasswordMail } from "../utils/adminSignupMail.js"
 
 const router= express.Router()
@@ -35,7 +36,7 @@ router.post("/signup",async (req,res)=>{
             secure:true
         }
 
-        sendMail(response.name,response.uniqueId)
+        await sendMail(response.name,response.uniqueId)
 
         res.status(200).cookie("token",token,options).json({AdminId:response.uniqueId,token:token})
 
@@ -56,12 +57,12 @@ router.post("/login",async(req,res)=>{
 
     //if admin doesn't exist
     if(!admin){
-        res.status(401).send("Admin doesn't exist")
+        return res.status(401).send("Admin doesn't exist")
     }
 
     //if password is incorrect
     if(!(await admin.comparePassword(password))){
-        res.status(401).send("Incorrect password")
+       return res.status(401).send("Incorrect password")
     }
     const payload= {
             id:admin.id,
@@ -89,7 +90,7 @@ router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
    try {
      if(!checkAdmin(req.user)){
             console.log("Only Admin can access");
-            res.status(401).send("Unauthorized Only Admin can Access...")
+            return res.status(401).send("Unauthorized Only Admin can Access...")
         }
     const adminId= req.user.id
     // console.log(adminId);
@@ -108,7 +109,7 @@ router.put("/profile/changePassword",jwtAuthMiddleware,async (req,res)=>{
    try {
      if(!checkAdmin(req.user)){
             console.log("Only Admin can access");
-            res.status(401).send("Unauthorized Only Admin can Access...")
+            return res.status(401).send("Unauthorized Only Admin can Access...")
         }
 
     const {currentPassword,newPassword}= req.body
@@ -155,7 +156,7 @@ router.post("/forgotPassword",async(req,res)=>{
         const verificationCode= generateRandomCode();
         // console.log(verificationCode);
 
-        forgotPasswordMail(admin.name,verificationCode);
+         await forgotPasswordMail(admin.name,verificationCode);
 
         admin.otp=verificationCode.toString();
         admin.otpExpiry= Date.now() + 10*60*1000;
@@ -225,11 +226,94 @@ router.get("/logout",jwtAuthMiddleware,async (req,res) => {
 })
 
 //2. Department management routes
-//create Department 
-//List of all Department 
-//update Department 
-//delete Department 
+//Department register
+router.post("/department/register",jwtAuthMiddleware,async (req,res)=>{
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const data= req.body
+        const newDepartment= new Department(data)
+        const response= await newDepartment.save();
+        console.log(response);
 
+        res.status(200).json({msg:"Department Saved...",id:response.id})
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
+//List of all Department 
+router.get("/department",jwtAuthMiddleware,async (req,res) => {
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+
+        const departmentList= await Department.find().sort({createdAt:-1})
+        // console.log(departmentList);
+
+        res.status(200).json({msg:"Department List is...",departmentList:departmentList})
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
+//update Department 
+router.put("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+
+        const departmentId= req.params.departmentId;
+        // console.log(departmentId);
+        const department= await Department.findById(departmentId)
+
+        if(!department){
+            return res.status(401).send("Department not Found...")
+        }
+        const updatedDepartmentInfo= req.body
+        const response= await Department.findByIdAndUpdate(departmentId,updatedDepartmentInfo,{
+            new:true,
+            runValidators:true
+        })
+        res.status(200).json({msg:"Department Updated...",response:response})
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+//delete Department 
+router.delete("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const departmentId= req.params.departmentId;
+        // console.log(departmentId);
+         const department= await Department.findById(departmentId)
+
+        if(!department){
+            return res.status(401).send("Department not Found...")
+        }
+        const response= await Department.findByIdAndDelete(departmentId)
+        res.status(200).send("Department Deleted...")
+        
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 
 //3.Staff management routes
 //create Staff 
