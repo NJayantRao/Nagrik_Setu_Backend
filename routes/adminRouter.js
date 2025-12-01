@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 import { Admin } from "../models/admin.js"
 import { Department } from "../models/departments.js"
+import { Complaints } from "../models/complaint.js"
 import { sendMail,forgotPasswordMail } from "../utils/adminSignupMail.js"
 
 const router= express.Router()
@@ -323,10 +324,147 @@ router.delete("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
 //delete Staff 
 
 //4.complaints management routes
-//List of all complaints 
+//List of all complaints
+router.get("/complaints",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const complaints= await Complaints.find().sort({createdAt:-1})
+
+        res.status(200).json({msg:"All Complaints are...",complaints:complaints})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 // get complaints by id
+router.get("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const complaintId= req.params.complaintId
+        const complaint= await Complaints.findById(complaintId)
+
+        if(!complaint){
+            return res.status(401).send("Complaints doesn't exist...")
+        }
+
+        res.status(200).json({msg:"The Complaint is...",complaint:complaint})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 //update complaints status
+router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        //Admin check
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const complaintId= req.params.complaintId
+        const complaint= await Complaints.findById(complaintId)
+
+        //check whether complaint exists or not
+        if(!complaint){
+            return res.status(400).send("Complaints doesn't exist...")
+        }
+
+        //finding current index
+        const allowedStatuses= ["Filed","Acknowledged","In-Progress","Resolved"]
+        const currentIndex= allowedStatuses.indexOf(complaint.status)
+
+        //if Invalid status
+        if(currentIndex === -1){
+            return res.status(400).send("Invalid Status...")
+        }
+
+        //if already resolved 
+        if(currentIndex === allowedStatuses.length -1){
+            return res.status(400).send("Complaint already resolved...")
+        }
+
+        const next = currentIndex+1
+        const status= allowedStatuses[next]
+        complaint.status= status
+        await complaint.save()
+
+        res.status(200).json({msg:"The Complaint status updated...",status:status})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
+//update complaint status for rejection
+router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        //Admin check
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const complaintId= req.params.complaintId
+        const complaint= await Complaints.findById(complaintId)
+
+        //check whether complaint exists or not
+        if(!complaint){
+            return res.status(400).send("Complaints doesn't exist...")
+        }
+
+        //if already resolved 
+        if(complaint.status === "Resolved"){
+            return res.status(400).send("Can't Reject, Complaint already resolved...")
+        }
+
+        if(complaint.status === "Rejected"){
+            return res.status(400).send("Complaint already Rejected...")
+        }
+
+        complaint.status= "Rejected"
+        await complaint.save()
+
+        res.status(200).json({msg:"The Complaint Rejected...",status:complaint.status})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
 //update complaints assign staff
 //delete complaints 
+router.delete("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
+    try{
+        //Admin check
+        if(!checkAdmin(req.user)){
+            console.log("Only Admin can access");
+            return res.status(401).send("Unauthorized Only Admin can Access...")
+        }
+        const complaintId= req.params.complaintId
+        const complaint= await Complaints.findById(complaintId)
+
+        //check whether complaint exists or not
+        if(!complaint){
+            return res.status(400).send("Complaints doesn't exist...")
+        }
+
+        const response= await Complaints.findByIdAndDelete(complaintId)
+
+        res.status(200).json({msg:"The Complaint Deleted..."})
+
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+})
 
 export {adminRouter}

@@ -29,7 +29,7 @@ const complaintSchema= new mongoose.Schema({
     },
     status:{
         type:String,
-        enum:["Filed","Acknowledged","In-Progress","Resolved","Resolved"],
+        enum:["Filed","Acknowledged","In-Progress","Resolved","Rejected"],
         default:"Filed",
     },
     uniqueToken:{

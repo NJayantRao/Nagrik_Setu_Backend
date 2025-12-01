@@ -190,7 +190,7 @@ router.put("/resetPassword",async(req,res)=>{
     }
 })
 
-//view complaints
+//view all complaints
 router.get("/profile/complaints",jwtAuthMiddleware,async(req,res)=>{
     try{
         const userId= req.user.id
