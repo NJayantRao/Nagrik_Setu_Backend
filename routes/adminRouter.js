@@ -2,11 +2,13 @@ import express from "express"
 import cookieParser from "cookie-parser"
 
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
+import { User } from "../models/users.js"
 import { Admin } from "../models/admin.js"
 import { Department } from "../models/departments.js"
 import { Complaints } from "../models/complaint.js"
 import { Staff } from "../models/staff.js"
 import { sendMail,forgotPasswordMail,sendStaffMail } from "../utils/adminSignupMail.js"
+import { complaintMailResolved,complaintMailRejected } from "../utils/complaintMail.js"
 
 const router= express.Router()
 const adminRouter= router
@@ -506,8 +508,14 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
                 res.status(400).send("Staff doesn't exist...")
             staff.isActive=false;
             await staff.save()
-        }
 
+            //Sending mail on resolved
+            const userId= complaint.user
+            const user= await User.findById(userId);
+            if(!user)
+                res.status(400).send("User doesn't exist...")
+            await complaintMailResolved(user.name,complaint.uniqueToken,complaint.title)
+        }
         res.status(200).json({msg:"The Complaint status updated...",status:status})
 
     }catch(error){
@@ -552,6 +560,13 @@ router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,
             if(staff)
             staff.isActive=false;
             await staff.save()
+
+            //Sending mail on resolved
+            const userId= complaint.user
+            const user= await User.findById(userId);
+            if(!user)
+                res.status(400).send("User doesn't exist...")
+            await complaintMailRejected(user.name,complaint.uniqueToken,complaint.title)
         }
 
         res.status(200).json({msg:"The Complaint Rejected...",status:complaint.status})
