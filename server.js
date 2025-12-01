@@ -6,8 +6,6 @@ dotenv.config()
 import { db } from "./db.js"
 import { userRouter } from "./routes/userRouter.js"
 import { adminRouter } from "./routes/adminRouter.js"
-import { departmentRouter } from "./routes/departmentRouter.js"
-import { staffRouter } from "./routes/staffRouter.js"
 import { complaintRouter } from "./routes/complaintRouter.js"
 
 const app = express()
@@ -25,14 +23,13 @@ app.options(/.*/,cors());
 app.use(express.json())
 const port = process.env.PORT || 3000
 
-app.get('/', (req, res) => {    
+app.get('/api/v1/', (req, res) => {    
   res.send('Hello World!')
 })
 
-app.use("/user",userRouter)
-app.use("/admin",adminRouter)
-app.use("/staff",staffRouter)
-app.use("/complaints",complaintRouter)
+app.use("/api/v1/user",userRouter)
+app.use("/api/v1/admin",adminRouter)
+app.use("/api/v1/complaints",complaintRouter)
 
 app.listen(port, () => {
   console.log(`Server Running successfully on port ${port}`)
