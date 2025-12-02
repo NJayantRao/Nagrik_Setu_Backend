@@ -92,7 +92,7 @@ router.post("/login",async(req,res)=>{
 //admin profile view
 router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
    try {
-     if(!checkAdmin(req.user)){
+     if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -111,7 +111,7 @@ router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
 //admin change password
 router.put("/profile/changePassword",jwtAuthMiddleware,async (req,res)=>{
    try {
-     if(!checkAdmin(req.user)){
+     if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -233,7 +233,7 @@ router.get("/logout",jwtAuthMiddleware,async (req,res) => {
 //Department register
 router.post("/department/register",jwtAuthMiddleware,async (req,res)=>{
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -253,7 +253,7 @@ router.post("/department/register",jwtAuthMiddleware,async (req,res)=>{
 //List of all Department 
 router.get("/department",jwtAuthMiddleware,async (req,res) => {
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -272,7 +272,7 @@ router.get("/department",jwtAuthMiddleware,async (req,res) => {
 //update Department 
 router.put("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -299,7 +299,7 @@ router.put("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
 //delete Department 
 router.delete("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -323,7 +323,7 @@ router.delete("/department/:departmentId",jwtAuthMiddleware,async (req,res) => {
 //create Staff 
 router.post("/staff/register",jwtAuthMiddleware,async (req,res)=>{
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -354,7 +354,7 @@ router.post("/staff/register",jwtAuthMiddleware,async (req,res)=>{
 //List of all Staff 
 router.get("/staff",jwtAuthMiddleware,async(req,res)=>{
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -372,7 +372,7 @@ router.get("/staff",jwtAuthMiddleware,async(req,res)=>{
 router.put("/staff/:staffId",jwtAuthMiddleware,async(req,res)=>{
     try{
         //Admin check
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -403,7 +403,7 @@ router.put("/staff/:staffId",jwtAuthMiddleware,async(req,res)=>{
 router.delete("/staff/:staffId",jwtAuthMiddleware,async(req,res)=>{
     try{
         //Admin check
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -429,7 +429,7 @@ router.delete("/staff/:staffId",jwtAuthMiddleware,async(req,res)=>{
 //List of all complaints
 router.get("/complaints",jwtAuthMiddleware,async(req,res)=>{
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -446,7 +446,7 @@ router.get("/complaints",jwtAuthMiddleware,async(req,res)=>{
 // get complaints by id
 router.get("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
     try{
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -468,7 +468,7 @@ router.get("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
 router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,res)=>{
     try{
         //Admin check
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -528,7 +528,7 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
 router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,res)=>{
     try{
         //Admin check
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -581,7 +581,7 @@ router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,
 router.put("/complaints/:complaintId/assignedTo/:staffId",jwtAuthMiddleware,async(req,res)=>{
     try{
         //Admin check
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }
@@ -621,7 +621,7 @@ router.put("/complaints/:complaintId/assignedTo/:staffId",jwtAuthMiddleware,asyn
 router.delete("/complaints/:complaintId",jwtAuthMiddleware,async(req,res)=>{
     try{
         //Admin check
-        if(!checkAdmin(req.user)){
+        if(! await checkAdmin(req.user)){
             console.log("Only Admin can access");
             return res.status(401).send("Unauthorized Only Admin can Access...")
         }

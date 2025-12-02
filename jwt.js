@@ -16,6 +16,9 @@ const jwtAuthMiddleware= (req,res,next)=>{
         next();
     }catch(error){
         console.log(error);
+        if (error.name === "TokenExpiredError") {
+            return res.status(401).send("Token expired. Please login again.");
+        }
         res.status(401).send("Invalid Token")
         
     }
@@ -23,7 +26,7 @@ const jwtAuthMiddleware= (req,res,next)=>{
 
 //Generate jwt token
 const generateToken= (userData)=>{
-    return jwt.sign(userData,process.env.JWT_SECRET)
+    return jwt.sign(userData,process.env.JWT_SECRET,{expiresIn: "7d"})
 }
 
 export {jwtAuthMiddleware,generateToken}
