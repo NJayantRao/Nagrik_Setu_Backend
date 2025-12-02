@@ -505,7 +505,7 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
             const staff= await Staff.findById(staffId)
 
             if(!staff)
-                res.status(400).send("Staff doesn't exist...")
+               return res.status(400).send("Staff doesn't exist...")
             staff.isActive=false;
             await staff.save()
 
@@ -513,7 +513,7 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
             const userId= complaint.user
             const user= await User.findById(userId);
             if(!user)
-                res.status(400).send("User doesn't exist...")
+               return res.status(400).send("User doesn't exist...")
             await complaintMailResolved(user.name,complaint.uniqueToken,complaint.title)
         }
         res.status(200).json({msg:"The Complaint status updated...",status:status})
@@ -565,7 +565,7 @@ router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,
             const userId= complaint.user
             const user= await User.findById(userId);
             if(!user)
-                res.status(400).send("User doesn't exist...")
+               return res.status(400).send("User doesn't exist...")
             await complaintMailRejected(user.name,complaint.uniqueToken,complaint.title)
         }
 
@@ -601,7 +601,7 @@ router.put("/complaints/:complaintId/assignedTo/:staffId",jwtAuthMiddleware,asyn
 
         //if staff already assigned
         if(staff.isActive)
-             res.status(400).send("Staff already assigned...")
+            return res.status(400).send("Staff already assigned...")
 
         complaint.assignedTo= staffId
         await complaint.save()
