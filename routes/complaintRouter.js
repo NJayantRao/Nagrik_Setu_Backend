@@ -35,7 +35,7 @@ router.post("/register",jwtAuthMiddleware,upload.single("imageURL"),async (req,r
         // console.log(user);
         
         //Sending mail
-        await sendComplaintMail(user.name,response.uniqueToken,response.title)
+        await sendComplaintMail(user.name,response.uniqueToken,response.title,user.email)
         
         res.status(200).json({uniqueToken:response.uniqueToken})
         

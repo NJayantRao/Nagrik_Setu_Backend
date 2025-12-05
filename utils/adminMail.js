@@ -9,7 +9,7 @@ dotenv.config()
 const resend= new Resend(process.env.RESEND_API);
 
 // Wrap in an async IIFE so we can use await.
-const sendMail= async (name,token) => {
+const sendMail= async (name,token,email) => {
     let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","emails","signupMailAdm.mjml"),"utf8")
     mjmlTemplate=mjmlTemplate
     .replace(/{{logo_url}}/g,"https://res.cloudinary.com/dpwqlb3d7/image/upload/v1764314433/My%20Brand/Gemini_Generated_Image_o5l8fro5l8fro5l8_s8srd9.png")
@@ -19,9 +19,9 @@ const sendMail= async (name,token) => {
     //Convert mjml to html
     const htmlOutput= mjml2html(mjmlTemplate).html
     const info = await resend.emails.send({
-    from: 'onboarding@resend.dev',
-    to: "njayantrao@gmail.com",
-    subject: "Welcome to Nagrik Setu",
+    from: 'Nagrik Setu System <system@nagriksetu.site>',
+    to: email,
+    subject: "Admin Account Created – Nagrik Setu",
     // text: "Hello world?", // plain‑text body
     html: `${htmlOutput}`, // HTML body
   });
@@ -33,7 +33,7 @@ const sendMail= async (name,token) => {
 }
 
 //Forgot Password mail
-const forgotPasswordMail= async (name,token) => {
+const forgotPasswordMail= async (name,token,email) => {
     let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","emails","forgotPasswordAdm.mjml"),"utf8")
     mjmlTemplate=mjmlTemplate
     .replace(/{{logo_url}}/g,"https://res.cloudinary.com/dpwqlb3d7/image/upload/v1764314433/My%20Brand/Gemini_Generated_Image_o5l8fro5l8fro5l8_s8srd9.png")
@@ -44,9 +44,9 @@ const forgotPasswordMail= async (name,token) => {
     //Convert mjml to html
     const htmlOutput= mjml2html(mjmlTemplate).html
     const info = await resend.emails.send({
-    from: 'onboarding@resend.dev',
-    to: "njayantrao@gmail.com",
-    subject: "Welcome to Nagrik Setu",
+    from: 'Nagrik Setu System <system@nagriksetu.site>',
+    to: email,
+    subject: "Admin Password Reset Request",
     // text: "Hello world?", // plain‑text body
     html: `${htmlOutput}`, // HTML body
   });
@@ -57,7 +57,7 @@ const forgotPasswordMail= async (name,token) => {
 //   console.log("Message sent:", info.messageId);
 }
 
-const sendStaffMail= async (name,token) => {
+const sendStaffMail= async (name,token,email) => {
     let mjmlTemplate= await fs.readFile(path.join(import.meta.dirname,"..","emails","signupMailStaff.mjml"),"utf8")
     mjmlTemplate=mjmlTemplate
     .replace(/{{logo_url}}/g,"https://res.cloudinary.com/dpwqlb3d7/image/upload/v1764314433/My%20Brand/Gemini_Generated_Image_o5l8fro5l8fro5l8_s8srd9.png")
@@ -67,9 +67,9 @@ const sendStaffMail= async (name,token) => {
     //Convert mjml to html
     const htmlOutput= mjml2html(mjmlTemplate).html
     const info = await resend.emails.send({
-    from: 'onboarding@resend.dev',
-    to: "njayantrao@gmail.com",
-    subject: "Welcome to Nagrik Setu",
+    from: 'Nagrik Setu Admin <admins@nagriksetu.site>',
+    to: email,
+    subject: "Staff Account Created – Nagrik Setu",
     // text: "Hello world?", // plain‑text body
     html: `${htmlOutput}`, // HTML body
   });

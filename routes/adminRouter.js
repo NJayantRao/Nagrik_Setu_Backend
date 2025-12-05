@@ -7,7 +7,7 @@ import { Admin } from "../models/admin.js"
 import { Department } from "../models/departments.js"
 import { Complaints } from "../models/complaint.js"
 import { Staff } from "../models/staff.js"
-import { sendMail,forgotPasswordMail,sendStaffMail } from "../utils/adminSignupMail.js"
+import { sendMail,forgotPasswordMail,sendStaffMail } from "../utils/adminMail.js"
 import { complaintMailResolved,complaintMailRejected } from "../utils/complaintMail.js"
 
 const router= express.Router()
@@ -40,7 +40,7 @@ router.post("/signup",async (req,res)=>{
             secure:true
         }
 
-        await sendMail(response.name,response.uniqueId)
+        await sendMail(response.name,response.uniqueId,response.email)
 
         res.status(200).cookie("token",token,options).json({AdminId:response.uniqueId,token:token})
 
@@ -160,7 +160,7 @@ router.post("/forgotPassword",async(req,res)=>{
         const verificationCode= generateRandomCode();
         // console.log(verificationCode);
 
-         await forgotPasswordMail(admin.name,verificationCode);
+         await forgotPasswordMail(admin.name,verificationCode,admin.email);
 
         admin.otp=verificationCode.toString();
         admin.otpExpiry= Date.now() + 10*60*1000;
@@ -341,7 +341,7 @@ router.post("/staff/register",jwtAuthMiddleware,async (req,res)=>{
             secure:true
         }
 
-        await sendStaffMail(response.name,response.uniqueId)
+        await sendStaffMail(response.name,response.uniqueId,response.email)
         res.status(200).cookie("token",token,options).json({StaffId:response.uniqueId,token:token})
 
     }catch(error){
@@ -514,7 +514,7 @@ router.put("/complaints/:complaintId/status/next",jwtAuthMiddleware,async(req,re
             const user= await User.findById(userId);
             if(!user)
                return res.status(400).send("User doesn't exist...")
-            await complaintMailResolved(user.name,complaint.uniqueToken,complaint.title)
+            await complaintMailResolved(user.name,complaint.uniqueToken,complaint.title,user.email)
         }
         res.status(200).json({msg:"The Complaint status updated...",status:status})
 
@@ -566,7 +566,7 @@ router.put("/complaints/:complaintId/status/reject",jwtAuthMiddleware,async(req,
             const user= await User.findById(userId);
             if(!user)
                return res.status(400).send("User doesn't exist...")
-            await complaintMailRejected(user.name,complaint.uniqueToken,complaint.title)
+            await complaintMailRejected(user.name,complaint.uniqueToken,complaint.title,user.email)
         }
 
         res.status(200).json({msg:"The Complaint Rejected...",status:complaint.status})

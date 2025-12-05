@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser"
 
 import { User } from "../models/users.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
-import { sendMail,forgotPasswordMail } from "../utils/resendMail.js"
+import { sendMail,forgotPasswordMail } from "../utils/userMail.js"
 import { Complaints } from "../models/complaint.js"
 
 const router= express.Router()
@@ -30,7 +30,7 @@ router.post("/signup",async (req,res)=>{
             secure:true
         }
 
-        await sendMail(response.name,response.uniqueToken);
+        await sendMail(response.name,response.uniqueToken,response.email);
 
         res.status(200).cookie("token",token,options).json({uniqueToken:response.uniqueToken,token:token})
     }catch(error){
@@ -141,7 +141,7 @@ router.post("/forgotPassword",async(req,res)=>{
         const verificationCode= generateRandomCode();
         // console.log(verificationCode);
 
-        await forgotPasswordMail(user.name,verificationCode);
+        await forgotPasswordMail(user.name,verificationCode,user.email);
 
         user.otp=verificationCode.toString();
         user.otpExpiry= Date.now() + 10*60*1000;
