@@ -26,6 +26,9 @@ const complaintSchema= new mongoose.Schema({
         ref:"Department",
         required:true,
     },
+    departmentName:{
+        type:String
+    },
     status:{
         type:String,
         enum:["Filed","Acknowledged","In-Progress","Resolved","Rejected"],
@@ -65,6 +68,7 @@ complaintSchema.pre("save", async function() {
                 exists= await mongoose.models.complaints.findOne({uniqueToken:tempToken})
             }
             complaint.uniqueToken= tempToken;
+            complaint.departmentName= deptDoc.name
         }
 })
 
