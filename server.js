@@ -12,7 +12,7 @@ const app = express()
 
 //cors configuratins
 app.use(cors({
-  origin:["http://localhost:5173","http://127.0.0.1:5173",process.env.FRONTEND_URL],
+  origin:["http://localhost:5173","http://127.0.0.1:5173","https://nagrik-setu.netlify.app"],
   credentials:true,
   methods:["GET","POST","PUT","DELETE","OPTIONS"],
   allowedHeaders:["Content-Type","Authorization"]
