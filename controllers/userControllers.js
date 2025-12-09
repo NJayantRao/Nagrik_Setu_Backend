@@ -1,6 +1,6 @@
 import { User } from "../models/users.js";
 import { generateToken,jwtAuthMiddleware } from "../jwt.js";
-import { sendMail } from "../utils/userMail.js";
+import { sendMail,forgotPasswordMail } from "../utils/userMail.js";
 import { Complaints } from "../models/complaint.js";
 import { Department } from "../models/departments.js"
 import { log } from "console";
