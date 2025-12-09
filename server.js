@@ -23,7 +23,7 @@ app.options(/.*/,cors());
 app.use(express.json())
 const port = process.env.PORT || 3000
 
-app.get('/', (req, res) => {    
+app.get('/api/v1/', (req, res) => {    
   res.status(200).send('Hello World!')
 })
 
