@@ -2,51 +2,26 @@
   <mj-head>
     <mj-attributes>
       <mj-all font-family="Helvetica, Arial, sans-serif" />
-      <mj-class
-        name="title"
-        font-size="24px"
-        font-weight="700"
-        color="#0A3A7E"
-      />
+      <mj-class name="title" font-size="24px" font-weight="700" color="#0A3A7E" />
       <mj-class name="text" font-size="15px" color="#4A5568" />
-      <mj-button
-        background-color="#0A3A7E"
-        color="#ffffff"
-        border-radius="6px"
-        padding="12px 24px"
-      />
+      <mj-button background-color="#0A3A7E" color="#ffffff" border-radius="6px" padding="12px 24px" />
     </mj-attributes>
 
     <mj-preview>Your Complaint Has Been Registered – Nagrik Setu</mj-preview>
   </mj-head>
 
   <mj-body background-color="#F4F6FA" width="600px">
+
     <!-- HEADER -->
-    <mj-section
-      background-color="#ffffff"
-      padding="24px"
-      border-radius="10px 10px 0 0"
-    >
+    <mj-section background-color="#ffffff" padding="24px" border-radius="10px 10px 0 0">
       <mj-column>
         <mj-image src="{{logo_url}}" width="115px" alt="Nagrik Setu Logo" />
         <mj-text align="center" css-class="title" padding-top="10px">
           Complaint Registered Successfully
         </mj-text>
 
-        <mj-text
-          align="center"
-          color="#0A3A7E"
-          font-size="13px"
-          padding="4px 0 0 0"
-        >
-          <span
-            style="
-              background: #e6eef9;
-              padding: 6px 14px;
-              border-radius: 20px;
-              font-weight: 600;
-            "
-          >
+        <mj-text align="center" color="#0A3A7E" font-size="13px" padding="4px 0 0 0">
+          <span style="background:#E6EEF9; padding:6px 14px; border-radius:20px; font-weight:600;">
             Tracking Token Generated
           </span>
         </mj-text>
@@ -54,20 +29,16 @@
     </mj-section>
 
     <!-- MAIN CONTENT -->
-    <mj-section
-      background-color="#ffffff"
-      padding="20px 24px"
-      border-radius="0 0 10px 10px"
-    >
+    <mj-section background-color="#ffffff" padding="20px 24px" border-radius="0 0 10px 10px">
       <mj-column>
+
         <mj-text css-class="text" padding="0 0 10px 0">
-          Hello {{ name }},
+          Hello {{name}},
         </mj-text>
 
         <mj-text css-class="text" padding="0 0 14px 0">
-          Your complaint has been successfully registered on
-          <strong>Nagrik Setu</strong>. You can use the details below to track
-          its progress anytime.
+          Your complaint has been successfully registered on <strong>Nagrik Setu</strong>.
+          You can use the details below to track its progress anytime.
         </mj-text>
 
         <!-- TOKEN BOX -->
@@ -77,21 +48,15 @@
 
         <mj-section padding="0" background-color="#F0F4FB" border-radius="8px">
           <mj-column>
-            <mj-text
-              align="center"
-              font-size="20px"
-              font-weight="700"
-              color="#0A3A7E"
-              padding="14px 0"
-            >
-              {{ uniqueToken }}
+            <mj-text align="center" font-size="20px" font-weight="700" color="#0A3A7E" padding="14px 0">
+              {{uniqueToken}}
             </mj-text>
           </mj-column>
         </mj-section>
 
         <!-- BASIC INFORMATION -->
         <mj-text css-class="text" padding="16px 0 0 0">
-          <strong>Complaint Title:</strong> {{ title }}
+          <strong>Complaint Title:</strong> {{title}}
         </mj-text>
 
         <mj-text css-class="text" padding="6px 0 16px 0">
@@ -107,9 +72,10 @@
 
         <!-- NOTICE -->
         <mj-text font-size="14px" color="#718096" padding="0">
-          Thank you for helping us improve civic services.<br />
+          Thank you for helping us improve civic services.<br/>
           You will receive updates as your complaint progresses.
         </mj-text>
+
       </mj-column>
     </mj-section>
 
@@ -121,5 +87,6 @@
         </mj-text>
       </mj-column>
     </mj-section>
+
   </mj-body>
 </mjml>

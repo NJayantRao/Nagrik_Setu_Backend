@@ -2,57 +2,27 @@
   <mj-head>
     <mj-attributes>
       <mj-all font-family="Helvetica, Arial, sans-serif" />
-      <mj-class
-        name="title"
-        font-size="24px"
-        color="#0A3A7E"
-        font-weight="700"
-      />
+      <mj-class name="title" font-size="24px" color="#0A3A7E" font-weight="700" />
       <mj-class name="text" font-size="15px" color="#4A5568" />
-      <mj-button
-        background-color="#0A3A7E"
-        color="#ffffff"
-        border-radius="5px"
-        padding="12px 24px"
-      />
+      <mj-button background-color="#0A3A7E" color="#ffffff" border-radius="5px" padding="12px 24px" />
     </mj-attributes>
 
     <mj-preview>Nagrik Setu – Staff Account Created</mj-preview>
   </mj-head>
 
   <mj-body background-color="#F4F6FA" width="600px">
+
     <!-- HEADER -->
-    <mj-section
-      background-color="#ffffff"
-      padding="0"
-      border-radius="10px 10px 0 0"
-    >
+    <mj-section background-color="#ffffff" padding="0" border-radius="10px 10px 0 0">
       <mj-column padding="0">
-        <mj-image
-          src="{{logo_url}}"
-          width="115px"
-          padding="20px 0 10px 0"
-          alt="Nagrik Setu Logo"
-        />
+        <mj-image src="{{logo_url}}" width="115px" padding="20px 0 10px 0" alt="Nagrik Setu Logo" />
 
         <mj-text align="center" css-class="title" padding="0 0 10px 0">
           Welcome to Nagrik Setu
         </mj-text>
 
-        <mj-text
-          align="center"
-          color="#0A3A7E"
-          font-size="13px"
-          padding="0 0 18px 0"
-        >
-          <span
-            style="
-              background: #e6eef9;
-              padding: 6px 14px;
-              border-radius: 20px;
-              font-weight: 600;
-            "
-          >
+        <mj-text align="center" color="#0A3A7E" font-size="13px" padding="0 0 18px 0">
+          <span style="background:#E6EEF9; padding:6px 14px; border-radius:20px; font-weight:600;">
             Staff Account Created
           </span>
         </mj-text>
@@ -60,37 +30,29 @@
     </mj-section>
 
     <!-- MAIN CONTENT -->
-    <mj-section
-      background-color="#ffffff"
-      padding="20px 24px 26px 24px"
-      border-radius="0 0 10px 10px"
-    >
+    <mj-section background-color="#ffffff" padding="20px 24px 26px 24px" border-radius="0 0 10px 10px">
       <mj-column>
+
         <!-- Greeting -->
         <mj-text css-class="text" padding="0 0 10px 0">
-          Hello {{ name }},
+          Hello {{name}},
         </mj-text>
 
         <mj-text css-class="text" padding="0 0 14px 0">
-          Your <strong>Nagrik Setu Staff account</strong> has been successfully
-          created. You can now log in, access your assigned departments, and
-          manage the complaints under your responsibility.
+          Your <strong>Nagrik Setu Staff account</strong> has been successfully created.
+          You can now log in, access your assigned departments, and manage the complaints under your responsibility.
         </mj-text>
 
         <!-- UNIQUE ID LABEL -->
-        <mj-text css-class="text" padding="0 0 6px 0"> Your Staff ID: </mj-text>
+        <mj-text css-class="text" padding="0 0 6px 0">
+          Your Staff ID:
+        </mj-text>
 
         <!-- UNIQUE ID BOX -->
         <mj-section padding="0" background-color="#F0F4FB" border-radius="8px">
           <mj-column>
-            <mj-text
-              align="center"
-              font-size="18px"
-              font-weight="700"
-              color="#0A3A7E"
-              padding="12px 0"
-            >
-              {{ staffId }}
+            <mj-text align="center" font-size="18px" font-weight="700" color="#0A3A7E" padding="12px 0">
+              {{staffId}}
             </mj-text>
           </mj-column>
         </mj-section>
@@ -102,20 +64,17 @@
         </mj-text>
 
         <!-- BUTTON -->
-        <mj-button
-          href="{{staff_dashboard_link}}"
-          font-size="16px"
-          padding="14px 0"
-        >
+        <mj-button href="{{staff_dashboard_link}}" font-size="16px" padding="14px 0">
           Go to Staff Dashboard
         </mj-button>
 
         <mj-divider border-color="#E2E8F0" padding="18px 0" />
 
         <mj-text font-size="14px" color="#718096" padding="0">
-          If this account was created in error or you have concerns, please
-          contact your system administrator.
+          If this account was created in error or you have concerns,
+          please contact your system administrator.
         </mj-text>
+
       </mj-column>
     </mj-section>
 
@@ -127,5 +86,6 @@
         </mj-text>
       </mj-column>
     </mj-section>
+
   </mj-body>
 </mjml>
