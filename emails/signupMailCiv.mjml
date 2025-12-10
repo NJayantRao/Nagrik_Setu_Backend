@@ -2,18 +2,34 @@
   <mj-head>
     <mj-attributes>
       <mj-all font-family="Helvetica, Arial, sans-serif" />
-      <mj-class name="heading" font-size="26px" color="#0B3D91" font-weight="700" />
+      <mj-class
+        name="heading"
+        font-size="26px"
+        color="#0B3D91"
+        font-weight="700"
+      />
       <mj-class name="text" font-size="16px" color="#4A5568" />
-      <mj-button background-color="#0B3D91" color="#ffffff" border-radius="6px" padding="12px 24px" />
+      <mj-button
+        background-color="#0B3D91"
+        color="#ffffff"
+        border-radius="6px"
+        padding="12px 24px"
+      />
     </mj-attributes>
 
-    <mj-preview>Welcome to Nagrik Setu — your bridge to better civic services.</mj-preview>
+    <mj-preview
+      >Welcome to Nagrik Setu — your bridge to better civic
+      services.</mj-preview
+    >
   </mj-head>
 
   <mj-body background-color="#F5F7FA" width="600px">
-    
     <!-- LOGO / HEADER -->
-    <mj-section background-color="#ffffff" padding="24px" border-radius="8px 8px 0 0">
+    <mj-section
+      background-color="#ffffff"
+      padding="24px"
+      border-radius="8px 8px 0 0"
+    >
       <mj-column>
         <mj-image src="{{logo_url}}" width="120px" alt="Nagrik Setu Logo" />
         <mj-text align="center" css-class="heading" padding-top="12px">
@@ -23,27 +39,43 @@
     </mj-section>
 
     <!-- MAIN CONTENT -->
-    <mj-section background-color="#ffffff" padding="0 24px 24px 24px" border-radius="0 0 8px 8px">
+    <mj-section
+      background-color="#ffffff"
+      padding="0 24px 24px 24px"
+      border-radius="0 0 8px 8px"
+    >
       <mj-column>
-
         <!-- FIXED ALIGNMENT -->
         <mj-text css-class="text" padding="16px 0 8px 0">
-          Hi {{name}},
+          Hi {{ name }},
         </mj-text>
 
         <mj-text css-class="text" padding="8px 0">
-          We're excited to have you on board! Nagrik Setu is your direct bridge to smarter, faster, and more transparent civic services.
+          We're excited to have you on board! Nagrik Setu is your direct bridge
+          to smarter, faster, and more transparent civic services.
         </mj-text>
 
         <mj-text css-class="text" padding="8px 0">
-          Below is your unique citizen token — keep it safe. You may need it for faster complaint tracking and support.
+          Below is your unique citizen token — keep it safe. You may need it for
+          faster complaint tracking and support.
         </mj-text>
 
         <!-- TOKEN BOX (NEW) -->
-        <mj-section padding="0" background-color="#F0F4FB" border-radius="10px" border="1px solid #D6E0EA">
+        <mj-section
+          padding="0"
+          background-color="#F0F4FB"
+          border-radius="10px"
+          border="1px solid #D6E0EA"
+        >
           <mj-column>
-            <mj-text align="center" font-size="18px" font-weight="700" color="#0B3D91" padding="14px 0">
-              {{user_token}}
+            <mj-text
+              align="center"
+              font-size="18px"
+              font-weight="700"
+              color="#0B3D91"
+              padding="14px 0"
+            >
+              {{ user_token }}
             </mj-text>
           </mj-column>
         </mj-section>
@@ -56,10 +88,19 @@
         </mj-text>
 
         <mj-text font-size="14px" color="#4A5568">
-          • <a href="{{dashboard_link}}" style="color:#0B3D91; text-decoration:none;">Visit your dashboard</a><br />
-          • <a href="{{help_center_link}}" style="color:#0B3D91; text-decoration:none;">Help & Support</a>
+          •
+          <a
+            href="{{dashboard_link}}"
+            style="color: #0b3d91; text-decoration: none"
+            >Visit your dashboard</a
+          ><br />
+          •
+          <a
+            href="{{help_center_link}}"
+            style="color: #0b3d91; text-decoration: none"
+            >Help & Support</a
+          >
         </mj-text>
-
       </mj-column>
     </mj-section>
 
@@ -67,11 +108,10 @@
     <mj-section padding="16px 0" background-color="#F5F7FA">
       <mj-column>
         <mj-text align="center" font-size="13px" color="#A0AEC0">
-          Thank you for joining Nagrik Setu.<br/>
+          Thank you for joining Nagrik Setu.<br />
           Together, we can build a more connected community.
         </mj-text>
       </mj-column>
     </mj-section>
-
   </mj-body>
 </mjml>
