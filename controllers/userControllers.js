@@ -158,24 +158,6 @@ export const userComplaintsList= async(req,res)=>{
     }
 }
 
-export const userLogout= async (req,res) => {
-    try{
-        const userId= req.user.id
-        const user= await User.findById(userId)
-        // console.log(user);
-        const options={
-        httpOnly:true,
-        secure:true
-    }
-
-        res.status(200).clearCookie("token",options).send("Logged Out Successfully...")
-        
-    }catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error...")
-    }
-}
-
 export const getDepartmentsId= async (req,res)=>{
     try {
         const userId= req.user.id
@@ -195,5 +177,43 @@ export const getDepartmentsId= async (req,res)=>{
     } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error")
+    }
+}
+
+export const userLogout= async (req,res) => {
+    try{
+        const userId= req.user.id
+        const user= await User.findById(userId)
+        // console.log(user);
+        const options={
+        httpOnly:true,
+        secure:true
+    }
+
+        res.status(200).clearCookie("token",options).send("Logged Out Successfully...")
+        
+    }catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
+    }
+}
+
+export const  userDelete= async(req,res)=>{
+    try {
+        const userId= req.user.id
+        const user= await User.findById(userId)
+
+        if(!user){
+            return res.status(401).send("User doesn't exist...")
+        }
+
+        const deleteUser= await User.findByIdAndDelete(userId)
+        
+        console.log("User Deleted...");
+        res.status(200).send("Account Deleted...")
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error...")
     }
 }

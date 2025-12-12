@@ -5,7 +5,7 @@ import { User } from "../models/users.js"
 import { jwtAuthMiddleware,generateToken } from "../jwt.js"
 import { sendMail,forgotPasswordMail } from "../utils/userMail.js"
 import { Complaints } from "../models/complaint.js"
-import { userComplaintsList, userForgotPassword, userLogin, userResetPassword, userSignup,userLogout,getDepartmentsId } from "../controllers/userControllers.js"
+import { userComplaintsList, userForgotPassword, userLogin, userResetPassword, userSignup,userLogout,getDepartmentsId, userDelete } from "../controllers/userControllers.js"
 
 const router= express.Router()
 const userRouter= router
@@ -73,6 +73,9 @@ router.get("/profile/complaints",jwtAuthMiddleware,userComplaintsList)
 
 //get all departments
 router.get("/profile/complaints/departments",jwtAuthMiddleware,getDepartmentsId)
+
+//delete User
+router.delete("/delete",jwtAuthMiddleware,userDelete)
 
 //logout
 router.get("/logout",jwtAuthMiddleware,userLogout)
