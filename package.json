@@ -21,8 +21,10 @@
     "jsonwebtoken": "^9.0.2",
     "mjml": "^4.17.1",
     "mongoose": "^9.0.0",
+    "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "resend": "^6.5.2"
+    "resend": "^6.5.2",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

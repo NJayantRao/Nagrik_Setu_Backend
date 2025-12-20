@@ -24,7 +24,7 @@ router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
     const userData= await User.findById(userId)
     if(!userData)
         return res.status(401).send("User not found...")
-    console.log(userData);
+   //  console.log(userData);
     res.status(200).send(userData)
    } catch (error) {
     console.log(error);
