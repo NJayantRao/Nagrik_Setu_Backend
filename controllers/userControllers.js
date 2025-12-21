@@ -3,7 +3,6 @@ import { generateToken,jwtAuthMiddleware } from "../jwt.js";
 import { sendMail,forgotPasswordMail } from "../utils/userMail.js";
 import { Complaints } from "../models/complaint.js";
 import { Department } from "../models/departments.js"
-import { log } from "console";
 
 export const userSignup= async (req,res)=>{
     try{
