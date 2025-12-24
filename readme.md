@@ -8,6 +8,7 @@ This backend ensures smooth communication between citizens reporting issues and 
 ---
 
 ## 📑 Table of Contents
+
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
@@ -21,13 +22,14 @@ This backend ensures smooth communication between citizens reporting issues and 
 ---
 
 ## 🔍 Overview
+
 The Nagrik Setu Backend acts as the core engine behind all user operations and admin functionalities.  
 It handles data flow between:
 
-- 📱 Citizens (raising issues)  
-- 🗂️ Admin authorities (reviewing + resolving)  
-- 💾 Central database  
-- ✉️ Email services  
+- 📱 Citizens (raising issues)
+- 🗂️ Admin authorities (reviewing + resolving)
+- 💾 Central database
+- ✉️ Email services
 
 It ensures high performance, security, and reliability while maintaining a clean API structure shared across multiple platforms.
 
@@ -36,12 +38,14 @@ It ensures high performance, security, and reliability while maintaining a clean
 ## ⭐ Key Features
 
 ### 🔐 Authentication & Authorization
-- Secure user login/register  
-- JWT-based authentication  
-- Password hashing  
-- Protected admin-level APIs  
+
+- Secure user login/register
+- JWT-based authentication
+- Password hashing
+- Protected admin-level APIs
 
 ### 📝 Complaint Management
+
 - Citizens can submit issues with:
   - Photo (uploaded to Cloudinary)
   - Description
@@ -52,46 +56,55 @@ It ensures high performance, security, and reliability while maintaining a clean
   - Manage categories
 
 ### ✉️ Email Notifications
-- Email alerts for signup, verification, or status updates  
+
+- Email alerts for signup, verification, or status updates
 - Uses **Resend API** for reliability
 
 ### 💾 Centralized Data Handling
+
 - Shared data for:
-  - Users  
-  - Complaints  
-  - Admins  
-  - Status history  
+  - Users
+  - Complaints
+  - Admins
+  - Status history
 
 ### 🧩 Modular Architecture
-- Clean controllers  
-- Organized utilities  
-- Dedicated email templates  
-- Easy to scale and maintain  
+
+- Clean controllers
+- Organized utilities
+- Dedicated email templates
+- Easy to scale and maintain
 
 ---
 
 ## 🧰 Tech Stack
 
 ### **Backend Server**
-- Node.js  
-- Express.js  
+
+- Node.js
+- Express.js
 
 ### **Database**
+
 - MongoDB (Mongoose ORM)
 
 ### **File Uploads**
-- Multer  
-- Cloudinary  
+
+- Multer
+- Cloudinary
 
 ### **Authentication**
-- JWT  
+
+- JWT
 - bcrypt (password hashing)
 
 ### **Emailing**
+
 - Resend API
 
 ### **Other Tools**
-- dotenv  
+
+- dotenv
 - Nodemon (for development)
 
 ---
@@ -99,23 +112,23 @@ It ensures high performance, security, and reliability while maintaining a clean
 ## 🔄 How It Works
 
 1. **Citizen submits an issue** via the mobile/web app  
-   → Photo, description, location sent to backend  
+   → Photo, description, location sent to backend
 
 2. **Backend validates & stores the report**  
    → Saves complaint in DB  
    → Uploads image to Cloudinary  
-   → Sends response back  
+   → Sends response back
 
 3. **Admin Dashboard fetches complaints**  
    → Displays all issues  
-   → Allows action updates  
+   → Allows action updates
 
 4. **Admin updates status**  
    → Backend updates DB  
-   → Citizen gets latest status  
+   → Citizen gets latest status
 
 5. **Citizens track all updates in real time**  
-   → Ensures transparency and faster resolution  
+   → Ensures transparency and faster resolution
 
 The backend acts as a secure bridge between users and authorities.
 
@@ -124,21 +137,23 @@ The backend acts as a secure bridge between users and authorities.
 ## ⚙️ Setup Instructions
 
 ### 1️⃣ Clone the Repository
+
 ```bash
 git clone https://github.com/NJayantRao/Nagrik_Setu_Backend.git
 cd Nagrik_Setu_Backend
 npm install
 npm run dev
 ```
+
 ## 🖥️ Admin Dashboard Integration
 
 The backend powers the Admin Dashboard by providing all essential APIs required for efficient management of citizen-reported issues. The Admin Panel can:
 
-- View, filter, and manage all complaints  
-- Update complaint statuses (Filed → In Progress → Resolved)  
-- Assign issues to staff members (future enhancement)  
-- Manage admin accounts and perform privileged actions  
-- Access backend-secured analytics and insights  
+- View, filter, and manage all complaints
+- Update complaint statuses (Filed → In Progress → Resolved)
+- Assign issues to staff members (future enhancement)
+- Manage admin accounts and perform privileged actions
+- Access backend-secured analytics and insights
 
 All admin-level communication with the backend is secured using **JWT authentication**, ensuring that sensitive operations are protected.
 
@@ -148,29 +163,29 @@ All admin-level communication with the backend is secured using **JWT authentica
 
 The Citizen App relies on this backend for seamless interaction with civic services. Through the provided APIs, citizens can:
 
-- Register and log in securely  
-- Submit complaints with photos and location  
-- Receive updates on the status of submitted issues  
-- View and track their entire complaint history  
+- Register and log in securely
+- Submit complaints with photos and location
+- Receive updates on the status of submitted issues
+- View and track their entire complaint history
 
 Most operations are protected by JWT, with the exception of user signup and login.
 
 ## 🚀 Future Enhancements
 
-- Add **staff-related routes** for handling issue assignment, staff login, staff dashboards, and workload management  
-- Implement **delete user** and **delete admin** functionality with secure authorization rules  
-- Introduce **access & refresh token** authentication flow for improved security and session management  
-- Integrate **Google Login** and **GitHub Login** for seamless OAuth-based authentication  
-- Add **role-based access control (RBAC)** for Admin, Staff, and Citizen operations  
+- Add **staff-related routes** for handling issue assignment, staff login, staff dashboards, and workload management
+- Implement **delete user** and **delete admin** functionality with secure authorization rules
+- Introduce **access & refresh token** authentication flow for improved security and session management
+- Integrate **Google Login** and **GitHub Login** for seamless OAuth-based authentication
+- Add **role-based access control (RBAC)** for Admin, Staff, and Citizen operations
 
 ## 🤝 Contributions
 
 Contributions are always welcome!  
 If you’d like to improve the backend, add new features, fix bugs, or enhance performance:
 
-- fork the repository  
-- create a feature or bugfix branch  
-- make your changes with proper commit messages  
-- submit a pull request explaining the update  
+- fork the repository
+- create a feature or bugfix branch
+- make your changes with proper commit messages
+- submit a pull request explaining the update
 
 All contributions that improve structure, security, or scalability are highly appreciated.

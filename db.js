@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 
-mongoose.connect(process.env.MONGODB_URI)
-const db= mongoose.connection;
+mongoose.connect(process.env.MONGODB_URL);
+const db = mongoose.connection;
 
-db.on("connected",()=>{
-    console.log("Mongo DB Server connected successfully...");
-})
+db.on("connected", () => {
+  console.log("Mongo DB Server connected successfully...");
+});
 
-db.on("error",()=>{
-    console.log("Error in connecting Mongo DB Server...");
-})
+db.on("error", () => {
+  console.log("Error in connecting Mongo DB Server...");
+});
 
-db.on("disconnected",()=>{
-    console.log("Mongo DB Server disconnectd...");
-})
+db.on("disconnected", () => {
+  console.log("Mongo DB Server disconnectd...");
+});
 
-export {db}
+export {db};
