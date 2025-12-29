@@ -174,6 +174,49 @@ export const getDepartmentsId = async (req, res) => {
   }
 };
 
+export const userProfile= async (req, res) => {
+  try {
+    const userId = req.user.id;
+    // console.log(userId);
+    const userData = await User.findById(userId);
+    if (!userData) return res.status(401).send("User not found...");
+    //  console.log(userData);
+    res.status(200).send(userData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error...");
+  }
+}
+
+export const changePasswordUser= async (req, res) => {
+  try {
+    const {currentPassword, newPassword} = req.body;
+
+    //Both Password are required
+    if (!currentPassword || !newPassword) {
+      return res.status(401).send("Enter Both Passwords...");
+    }
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    const isMatch = await user.comparePassword(currentPassword);
+    //If password is incorrect
+    if (!isMatch) {
+      return res.status(401).send("Incorrect Password...");
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    console.log("Password Saved Successfully...");
+
+    res.status(200).send("Password Saved Successfully...");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error...");
+  }
+}
+
 export const userLogout = async (req, res) => {
   try {
     const userId = req.user.id;
