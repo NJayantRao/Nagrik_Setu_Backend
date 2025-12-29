@@ -110,7 +110,7 @@ export const adminForgotPassword = async (req, res) => {
     const verificationCode = generateRandomCode();
     // console.log(verificationCode);
 
-    //  await forgotPasswordMail(admin.name,verificationCode,admin.email);
+    await forgotPasswordMail(admin.name, verificationCode, admin.email);
 
     admin.otp = verificationCode.toString();
     admin.otpExpiry = Date.now() + 10 * 60 * 1000;
@@ -149,6 +149,79 @@ export const adminResetPassword = async (req, res) => {
 
     // console.log(admin);
     res.status(200).send("Password Saved Successfully...");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error...");
+  }
+};
+
+export const viewAdminProfile = async (req, res) => {
+  try {
+    if (!(await checkAdmin(req.user))) {
+      console.log("Only Admin can access");
+      return res.status(401).send("Unauthorized Only Admin can Access...");
+    }
+    const adminId = req.user.id;
+    // console.log(adminId);
+    const adminData = await Admin.findById(adminId);
+    console.log(adminData);
+
+    res.status(200).send(adminData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error...");
+  }
+};
+
+export const changePasswordAdmin = async (req, res) => {
+  try {
+    if (!(await checkAdmin(req.user))) {
+      console.log("Only Admin can access");
+      return res.status(401).send("Unauthorized Only Admin can Access...");
+    }
+
+    const {currentPassword, newPassword} = req.body;
+
+    //Both Password are required
+    if (!currentPassword || !newPassword) {
+      return res.status(401).send("Enter Both Passwords...");
+    }
+    const adminId = req.user.id;
+    const admin = await Admin.findById(adminId);
+
+    const isMatch = await admin.comparePassword(currentPassword);
+    //If password is incorrect
+    if (!isMatch) {
+      return res.status(401).send("Incorrect Password...");
+    }
+
+    admin.password = newPassword;
+    await admin.save();
+
+    console.log("Password Saved Successfully...");
+
+    res.status(200).send("Password Saved Successfully...");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error...");
+  }
+};
+
+//logout
+export const adminLogout = async (req, res) => {
+  try {
+    const adminId = req.user.id;
+    const admin = await Admin.findById(adminId);
+    // console.log(admin);
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    res
+      .status(200)
+      .clearCookie("token", options)
+      .send("Logged Out Successfully...");
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error...");
