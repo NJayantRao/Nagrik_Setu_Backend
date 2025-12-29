@@ -1,108 +1,118 @@
-import {jwtAuthMiddleware, generateToken} from "../middlewares/jwt.js";
 import {User} from "../models/users.js";
-import {Admin} from "../models/admin.js";
-import {Department} from "../models/departments.js";
 import {Complaints} from "../models/complaint.js";
 import {Staff} from "../models/staff.js";
-import {
-  sendMail,
-  forgotPasswordMail,
-  sendStaffMail,
-} from "../utils/adminMail.js";
 import {
   complaintMailResolved,
   complaintMailRejected,
 } from "../utils/complaintMail.js";
+import {checkAdmin} from "../utils/checkAdmin.js";
 
+/**
+ * @desc    Get list of all complaints (Admin only)
+ * @route   GET /admin/complaints
+ * @access  Private (Admin)
+ */
 export const complaintsList = async (req, res) => {
   try {
+    // Authorization check
     if (!(await checkAdmin(req.user))) {
-      console.log("Only Admin can access");
       return res.status(401).send("Unauthorized Only Admin can Access...");
     }
+
+    // Fetch all complaints sorted by latest first
     const complaints = await Complaints.find().sort({createdAt: -1});
 
-    res
-      .status(200)
-      .json({msg: "All Complaints are...", complaints: complaints});
+    res.status(200).json({
+      msg: "All Complaints are...",
+      complaints,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error...");
   }
 };
 
+/**
+ * @desc    Get a single complaint by ID
+ * @route   GET /admin/complaint/:complaintId
+ * @access  Private (Admin)
+ */
 export const getComplaintById = async (req, res) => {
   try {
+    // Authorization check
     if (!(await checkAdmin(req.user))) {
-      console.log("Only Admin can access");
       return res.status(401).send("Unauthorized Only Admin can Access...");
     }
+
     const complaintId = req.params.complaintId;
     const complaint = await Complaints.findById(complaintId);
 
+    // Complaint existence check
     if (!complaint) {
       return res.status(401).send("Complaints doesn't exist...");
     }
 
-    res.status(200).json({msg: "The Complaint is...", complaint: complaint});
+    res.status(200).json({
+      msg: "The Complaint is...",
+      complaint,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error...");
   }
 };
 
+/**
+ * @desc    Update complaint status step-by-step
+ * @route   PUT /admin/complaint/status/:complaintId
+ * @access  Private (Admin)
+ */
 export const updateComplaintStatus = async (req, res) => {
   try {
-    //Admin check
+    // Authorization check
     if (!(await checkAdmin(req.user))) {
-      console.log("Only Admin can access");
       return res.status(401).send("Unauthorized Only Admin can Access...");
     }
+
     const complaintId = req.params.complaintId;
     const complaint = await Complaints.findById(complaintId);
 
-    //check whether complaint exists or not
+    // Complaint existence check
     if (!complaint) {
       return res.status(400).send("Complaints doesn't exist...");
     }
 
-    //finding current index
+    // Allowed status flow
     const allowedStatuses = [
       "Filed",
       "Acknowledged",
       "In-Progress",
       "Resolved",
     ];
+
     const currentIndex = allowedStatuses.indexOf(complaint.status);
 
-    //if Invalid status
+    // Invalid status check
     if (currentIndex === -1) {
       return res.status(400).send("Invalid Status...");
     }
 
-    //if already resolved
+    // Already resolved check
     if (currentIndex === allowedStatuses.length - 1) {
       return res.status(400).send("Complaint already resolved...");
     }
 
-    const next = currentIndex + 1;
-    const status = allowedStatuses[next];
+    // Move to next status
+    const nextIndex = currentIndex + 1;
+    const status = allowedStatuses[nextIndex];
     complaint.status = status;
     await complaint.save();
 
-    //if resolved then make staff available
-    if (allowedStatuses[next] === "Resolved") {
-      // const staffId = complaint.assignedTo;
-      // const staff = await Staff.findById(staffId);
-
-      // if (!staff) return res.status(400).send("Staff doesn't exist...");
-      // staff.isActive = false;
-      // await staff.save();
-
-      //Sending mail on resolved
-      const userId = complaint.user;
-      const user = await User.findById(userId);
+    // If resolved, notify user via email
+    if (status === "Resolved") {
+      const user = await User.findById(complaint.user);
       if (!user) return res.status(400).send("User doesn't exist...");
+
       await complaintMailResolved(
         user.name,
         complaint.uniqueToken,
@@ -110,29 +120,38 @@ export const updateComplaintStatus = async (req, res) => {
         user.email
       );
     }
-    res.status(200).json({msg: "Complaint status updated...", status: status});
+
+    res.status(200).json({
+      msg: "Complaint status updated...",
+      status,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error...");
   }
 };
 
+/**
+ * @desc    Reject a complaint
+ * @route   PUT /admin/complaint/reject/:complaintId
+ * @access  Private (Admin)
+ */
 export const rejectComplaint = async (req, res) => {
   try {
-    //Admin check
+    // Authorization check
     if (!(await checkAdmin(req.user))) {
-      console.log("Only Admin can access");
       return res.status(401).send("Unauthorized Only Admin can Access...");
     }
+
     const complaintId = req.params.complaintId;
     const complaint = await Complaints.findById(complaintId);
 
-    //check whether complaint exists or not
+    // Complaint existence check
     if (!complaint) {
       return res.status(400).send("Complaints doesn't exist...");
     }
 
-    //if already resolved
+    // Status validation
     if (complaint.status === "Resolved") {
       return res
         .status(400)
@@ -143,21 +162,22 @@ export const rejectComplaint = async (req, res) => {
       return res.status(400).send("Complaint already Rejected...");
     }
 
+    // Reject complaint
     complaint.status = "Rejected";
     await complaint.save();
 
-    //if rejected then make staff available
+    // Free assigned staff (if any)
     if (complaint.assignedTo) {
-      const staffId = complaint.assignedTo;
-      const staff = await Staff.findById(staffId);
+      const staff = await Staff.findById(complaint.assignedTo);
+      if (staff) {
+        staff.isActive = false;
+        await staff.save();
+      }
 
-      if (staff) staff.isActive = false;
-      await staff.save();
-
-      //Sending mail on resolved
-      const userId = complaint.user;
-      const user = await User.findById(userId);
+      // Notify user via email
+      const user = await User.findById(complaint.user);
       if (!user) return res.status(400).send("User doesn't exist...");
+
       await complaintMailRejected(
         user.name,
         complaint.uniqueToken,
@@ -166,69 +186,83 @@ export const rejectComplaint = async (req, res) => {
       );
     }
 
-    res
-      .status(200)
-      .json({msg: "The Complaint Rejected...", status: complaint.status});
+    res.status(200).json({
+      msg: "The Complaint Rejected...",
+      status: complaint.status,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error...");
   }
 };
 
+/**
+ * @desc    Assign staff to a complaint
+ * @route   PUT /admin/complaint/assign/:complaintId/:staffId
+ * @access  Private (Admin)
+ */
 export const assignStaffToComplaint = async (req, res) => {
   try {
-    //Admin check
+    // Authorization check
     if (!(await checkAdmin(req.user))) {
-      console.log("Only Admin can access");
       return res.status(401).send("Unauthorized Only Admin can Access...");
     }
-    const complaintId = req.params.complaintId;
+
+    const {complaintId, staffId} = req.params;
+
     const complaint = await Complaints.findById(complaintId);
-    //check whether complaint exists or not
     if (!complaint) {
       return res.status(400).send("Complaints doesn't exist...");
     }
 
-    const staffId = req.params.staffId;
     const staff = await Staff.findById(staffId);
-    //check whether staff exists or not
     if (!staff) {
       return res.status(400).send("Staff doesn't exist...");
     }
 
-    //if staff already assigned
-    if (staff.isActive)
+    // Staff availability check
+    if (staff.isActive) {
       return res.status(400).send("Staff already assigned...");
+    }
 
+    // Assign staff
     complaint.assignedTo = staffId;
     await complaint.save();
 
     staff.isActive = true;
     await staff.save();
 
-    res.status(200).json({msg: "The Complaint is...", complaint: complaint});
+    res.status(200).json({
+      msg: "Staff assigned successfully...",
+      complaint,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error...");
   }
 };
 
+/**
+ * @desc    Delete a complaint
+ * @route   DELETE /admin/complaint/:complaintId
+ * @access  Private (Admin)
+ */
 export const deleteComplaint = async (req, res) => {
   try {
-    //Admin check
+    // Authorization check
     if (!(await checkAdmin(req.user))) {
-      console.log("Only Admin can access");
       return res.status(401).send("Unauthorized Only Admin can Access...");
     }
+
     const complaintId = req.params.complaintId;
     const complaint = await Complaints.findById(complaintId);
 
-    //check whether complaint exists or not
+    // Complaint existence check
     if (!complaint) {
       return res.status(400).send("Complaints doesn't exist...");
     }
 
-    const response = await Complaints.findByIdAndDelete(complaintId);
+    await Complaints.findByIdAndDelete(complaintId);
 
     res.status(200).json({msg: "The Complaint Deleted..."});
   } catch (error) {

@@ -1,10 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import {jwtAuthMiddleware} from "../middlewares/jwt.js";
 
-import {User} from "../models/users.js";
-import {jwtAuthMiddleware, generateToken} from "../middlewares/jwt.js";
-import {sendMail, forgotPasswordMail} from "../utils/userMail.js";
-import {Complaints} from "../models/complaint.js";
 import {
   userComplaintsList,
   userForgotPassword,
@@ -21,38 +18,84 @@ import {
 const router = express.Router();
 const userRouter = router;
 
-//user Signup
+/**
+ * ===========================
+ * USER AUTH & PROFILE ROUTES
+ * ===========================
+ */
+
+/**
+ * @route   POST /user/signup
+ * @desc    Register a new user
+ * @access  Public
+ */
 router.post("/signup", userSignup);
 
-//user login route
+/**
+ * @route   POST /user/login
+ * @desc    Login user and generate JWT
+ * @access  Public
+ */
 router.post("/login", userLogin);
 
-//view profile
+/**
+ * @route   GET /user/profile
+ * @desc    Get logged-in user profile
+ * @access  Private
+ */
 router.get("/profile", jwtAuthMiddleware, userProfile);
 
-//change password
+/**
+ * @route   PUT /user/profile/changePassword
+ * @desc    Change logged-in user password
+ * @access  Private
+ */
 router.put("/profile/changePassword", jwtAuthMiddleware, changePasswordUser);
 
-//forgot password
+/**
+ * @route   POST /user/forgotPassword
+ * @desc    Send OTP for password reset
+ * @access  Public
+ */
 router.post("/forgotPassword", userForgotPassword);
 
-// //reset password
+/**
+ * @route   PUT /user/resetPassword
+ * @desc    Reset password using OTP
+ * @access  Public
+ */
 router.put("/resetPassword", userResetPassword);
 
-//view all complaints
+/**
+ * @route   GET /user/profile/complaints
+ * @desc    Get all complaints of logged-in user
+ * @access  Private
+ */
 router.get("/profile/complaints", jwtAuthMiddleware, userComplaintsList);
 
-//get all departments
+/**
+ * @route   GET /user/profile/complaints/departments
+ * @desc    Get list of departments for complaint registration
+ * @access  Private
+ */
 router.get(
   "/profile/complaints/departments",
   jwtAuthMiddleware,
   getDepartmentsId
 );
 
-//delete User
+/**
+ * @route   DELETE /user/delete
+ * @desc    Delete logged-in user account
+ * @access  Private
+ */
 router.delete("/delete", jwtAuthMiddleware, userDelete);
 
-//logout
+/**
+ * @route   GET /user/logout
+ * @desc    Logout user and clear JWT cookie
+ * @access  Private
+ */
 router.get("/logout", jwtAuthMiddleware, userLogout);
 
 export {userRouter};

@@ -1,21 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-
-import {jwtAuthMiddleware, generateToken} from "../middlewares/jwt.js";
-import {User} from "../models/users.js";
+import {jwtAuthMiddleware} from "../middlewares/jwt.js";
 import {Admin} from "../models/admin.js";
-import {Department} from "../models/departments.js";
-import {Complaints} from "../models/complaint.js";
-import {Staff} from "../models/staff.js";
-import {
-  sendMail,
-  forgotPasswordMail,
-  sendStaffMail,
-} from "../utils/adminMail.js";
-import {
-  complaintMailResolved,
-  complaintMailRejected,
-} from "../utils/complaintMail.js";
+
+/* Admin account controllers */
 import {
   adminForgotPassword,
   adminLogin,
@@ -25,18 +13,24 @@ import {
   changePasswordAdmin,
   viewAdminProfile,
 } from "../controllers/adminControllers.js";
+
+/* Department management controllers */
 import {
   deleteDepartment,
   departmentsList,
   registerDepartment,
   updateDepartment,
 } from "../controllers/adminDepartments.controllers.js";
+
+/* Staff management controllers */
 import {
   deleteStaff,
   registerStaff,
   staffList,
   updateStaff,
 } from "../controllers/adminStaffManagement.controllers.js";
+
+/* Complaint management controllers */
 import {
   assignStaffToComplaint,
   complaintsList,
@@ -49,90 +43,188 @@ import {
 const router = express.Router();
 const adminRouter = router;
 
-async function checkAdmin(admin) {
-  try {
-    const cand = await Admin.findById(admin.id);
-    return cand.role === "Admin";
-  } catch (error) {
-    return false;
-  }
-}
+/**
+ * ===========================
+ * ADMIN ROUTES
+ * ===========================
+ *
+ * All routes in this file are prefixed with `/admin`
+ * Protected routes require a valid JWT token
+ */
 
-//1.admin account management routes
-//admin Signup
+/* ===========================
+   1. ADMIN ACCOUNT MANAGEMENT
+   =========================== */
+
+/**
+ * @route   POST /admin/signup
+ * @desc    Register a new admin
+ * @access  Public
+ */
 router.post("/signup", adminSignUp);
 
-//admin login route
+/**
+ * @route   POST /admin/login
+ * @desc    Login admin and generate JWT
+ * @access  Public
+ */
 router.post("/login", adminLogin);
-//admin profile view
+
+/**
+ * @route   GET /admin/profile
+ * @desc    View logged-in admin profile
+ * @access  Private (Admin)
+ */
 router.get("/profile", jwtAuthMiddleware, viewAdminProfile);
 
-//admin change password
+/**
+ * @route   PUT /admin/profile/changePassword
+ * @desc    Change admin password
+ * @access  Private (Admin)
+ */
 router.put("/profile/changePassword", jwtAuthMiddleware, changePasswordAdmin);
 
-//admin forgot password
+/**
+ * @route   POST /admin/forgotPassword
+ * @desc    Send OTP for admin password reset
+ * @access  Public
+ */
 router.post("/forgotPassword", adminForgotPassword);
 
-//admin reset password
+/**
+ * @route   PUT /admin/resetPassword
+ * @desc    Reset admin password using OTP
+ * @access  Public
+ */
 router.put("/resetPassword", adminResetPassword);
 
-//logout
+/**
+ * @route   GET /admin/logout
+ * @desc    Logout admin and clear JWT cookie
+ * @access  Private (Admin)
+ */
 router.get("/logout", jwtAuthMiddleware, adminLogout);
 
-//2. Department management routes
-//Department register
+/* ===========================
+   2. DEPARTMENT MANAGEMENT
+   =========================== */
+
+/**
+ * @route   POST /admin/department/register
+ * @desc    Register a new department
+ * @access  Private (Admin)
+ */
 router.post("/department/register", jwtAuthMiddleware, registerDepartment);
 
-//List of all Department
+/**
+ * @route   GET /admin/departments
+ * @desc    Get list of all departments
+ * @access  Private (Admin)
+ */
 router.get("/departments", jwtAuthMiddleware, departmentsList);
 
-//update Department
+/**
+ * @route   PUT /admin/department/:departmentId
+ * @desc    Update department details
+ * @access  Private (Admin)
+ */
 router.put("/department/:departmentId", jwtAuthMiddleware, updateDepartment);
-//delete Department
+
+/**
+ * @route   DELETE /admin/department/:departmentId
+ * @desc    Delete a department
+ * @access  Private (Admin)
+ */
 router.delete("/department/:departmentId", jwtAuthMiddleware, deleteDepartment);
 
-//3.Staff management routes
-//create Staff
+/* ===========================
+   3. STAFF MANAGEMENT
+   =========================== */
+
+/**
+ * @route   POST /admin/staff/register
+ * @desc    Register a new staff member
+ * @access  Private (Admin)
+ */
 router.post("/staff/register", jwtAuthMiddleware, registerStaff);
 
-//List of all Staff
+/**
+ * @route   GET /admin/staff
+ * @desc    Get list of all staff members
+ * @access  Private (Admin)
+ */
 router.get("/staff", jwtAuthMiddleware, staffList);
 
-//update Staff info
+/**
+ * @route   PUT /admin/staff/:staffId
+ * @desc    Update staff details
+ * @access  Private (Admin)
+ */
 router.put("/staff/:staffId", jwtAuthMiddleware, updateStaff);
 
-//delete Staff
+/**
+ * @route   DELETE /admin/staff/:staffId
+ * @desc    Delete a staff member
+ * @access  Private (Admin)
+ */
 router.delete("/staff/:staffId", jwtAuthMiddleware, deleteStaff);
 
-//4.complaints management routes
-//List of all complaints
+/* ===========================
+   4. COMPLAINT MANAGEMENT
+   =========================== */
+
+/**
+ * @route   GET /admin/complaints
+ * @desc    Get list of all complaints
+ * @access  Private (Admin)
+ */
 router.get("/complaints", jwtAuthMiddleware, complaintsList);
 
-// get complaints by id
+/**
+ * @route   GET /admin/complaints/:complaintId
+ * @desc    Get complaint details by ID
+ * @access  Private (Admin)
+ */
 router.get("/complaints/:complaintId", jwtAuthMiddleware, getComplaintById);
 
-//update complaints status need refactoring
+/**
+ * @route   PUT /admin/complaints/:complaintId/status/next
+ * @desc    Move complaint to next status
+ * @access  Private (Admin)
+ */
 router.put(
   "/complaints/:complaintId/status/next",
   jwtAuthMiddleware,
   updateComplaintStatus
 );
 
-//update complaint status for rejection
+/**
+ * @route   PUT /admin/complaints/:complaintId/status/reject
+ * @desc    Reject a complaint
+ * @access  Private (Admin)
+ */
 router.put(
   "/complaints/:complaintId/status/reject",
   jwtAuthMiddleware,
   rejectComplaint
 );
 
-//update complaints assign staff
+/**
+ * @route   PUT /admin/complaints/:complaintId/assignedTo/:staffId
+ * @desc    Assign staff to a complaint
+ * @access  Private (Admin)
+ */
 router.put(
   "/complaints/:complaintId/assignedTo/:staffId",
   jwtAuthMiddleware,
   assignStaffToComplaint
 );
 
-//delete complaints
+/**
+ * @route   DELETE /admin/complaints/:complaintId
+ * @desc    Delete a complaint
+ * @access  Private (Admin)
+ */
 router.delete("/complaints/:complaintId", jwtAuthMiddleware, deleteComplaint);
 
 export {adminRouter};

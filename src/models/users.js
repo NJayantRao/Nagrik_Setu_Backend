@@ -51,7 +51,7 @@ function generateToken(address) {
   const city = address.toUpperCase().slice(0, 4).padEnd(4, "X");
   // console.log(city);
   const randomNumber = 10000000 + Math.floor(Math.random() * 90000000);
-  console.log(randomNumber);
+  // console.log(randomNumber);
 
   return `CIV-${city}-${randomNumber}`;
 }
