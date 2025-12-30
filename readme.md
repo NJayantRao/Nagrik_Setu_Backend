@@ -1,7 +1,7 @@
 # 🏛️ Nagrik Setu Backend
 
 The **Nagrik Setu Backend** powers the entire Nagrik Setu ecosystem — including the Citizen App and the Admin Dashboard.  
-It provides secure APIs for user authentication, complaint reporting, email notifications, and admin management.
+It provides secure APIs for user authentication, complaint reporting, email notifications and admin management.
 
 This backend ensures smooth communication between citizens reporting issues and administrators handling those reports, forming a fast, transparent, and scalable civic problem-solving system.
 
@@ -21,7 +21,7 @@ This backend ensures smooth communication between citizens reporting issues and 
 
 ---
 
-## 🔍 Overview
+## 🔍 Overview <a id="overview"></a>
 
 The Nagrik Setu Backend acts as the core engine behind all user operations and admin functionalities.  
 It handles data flow between:
@@ -35,7 +35,7 @@ It ensures high performance, security, and reliability while maintaining a clean
 
 ---
 
-## ⭐ Key Features
+## ⭐ Key Features <a id="key-features"></a>
 
 ### 🔐 Authentication & Authorization
 
@@ -57,7 +57,7 @@ It ensures high performance, security, and reliability while maintaining a clean
 
 ### ✉️ Email Notifications
 
-- Email alerts for signup, verification, or status updates
+- Email alerts for signup and status updates
 - Uses **Resend API** for reliability
 
 ### 💾 Centralized Data Handling
@@ -77,7 +77,7 @@ It ensures high performance, security, and reliability while maintaining a clean
 
 ---
 
-## 🧰 Tech Stack
+## 🧰 Tech Stack <a id="tech-stack"></a>
 
 ### **Backend Server**
 
@@ -109,7 +109,7 @@ It ensures high performance, security, and reliability while maintaining a clean
 
 ---
 
-## 🔄 How It Works
+## 🔄 How It Works <a id="how-it-works"></a>
 
 1. **Citizen submits an issue** via the mobile/web app  
    → Photo, description, location sent to backend
@@ -134,7 +134,7 @@ The backend acts as a secure bridge between users and authorities.
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Setup Instructions <a id="setup-instructions"></a>
 
 ### 1️⃣ Clone the Repository
 
@@ -145,7 +145,7 @@ npm install
 npm run dev
 ```
 
-## 🖥️ Admin Dashboard Integration
+## 🖥️ Admin Dashboard Integration <a id="admin-dashboard-integration"></a>
 
 The backend powers the Admin Dashboard by providing all essential APIs required for efficient management of citizen-reported issues. The Admin Panel can:
 
@@ -159,7 +159,7 @@ All admin-level communication with the backend is secured using **JWT authentica
 
 ---
 
-## 📱 Citizen App Integration
+## 📱 Citizen App Integration <a id="citizen-app-integration"></a>
 
 The Citizen App relies on this backend for seamless interaction with civic services. Through the provided APIs, citizens can:
 
@@ -170,15 +170,15 @@ The Citizen App relies on this backend for seamless interaction with civic servi
 
 Most operations are protected by JWT, with the exception of user signup and login.
 
-## 🚀 Future Enhancements
+## 🚀 Future Enhancements <a id="future-enhancements"></a>
 
 - Add **staff-related routes** for handling issue assignment, staff login, staff dashboards, and workload management
-- Implement **delete user** and **delete admin** functionality with secure authorization rules
+- Implement **delete admin** functionality with secure authorization rules
 - Introduce **access & refresh token** authentication flow for improved security and session management
 - Integrate **Google Login** and **GitHub Login** for seamless OAuth-based authentication
 - Add **role-based access control (RBAC)** for Admin, Staff, and Citizen operations
 
-## 🤝 Contributions
+## 🤝 Contributions <a id="contributions"></a>
 
 Contributions are always welcome!  
 If you’d like to improve the backend, add new features, fix bugs, or enhance performance:
