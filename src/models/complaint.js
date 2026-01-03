@@ -48,7 +48,11 @@ const complaintSchema = new mongoose.Schema(
 );
 
 function generateToken(department) {
-  const dept = department.toUpperCase().slice(0, 4).padEnd(4, "X");
+  const dept = department
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "")
+    .slice(0, 4)
+    .padEnd(4, "X");
   // console.log(dept);
   const randomNumber = 10000000 + Math.floor(Math.random() * 90000000);
   // console.log(randomNumber)
