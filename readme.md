@@ -189,3 +189,7 @@ If you’d like to improve the backend, add new features, fix bugs, or enhance p
 - submit a pull request explaining the update
 
 All contributions that improve structure, security, or scalability are highly appreciated.
+
+## LICENSE
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
