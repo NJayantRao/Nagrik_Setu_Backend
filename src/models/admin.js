@@ -48,7 +48,11 @@ const adminSchema = new mongoose.Schema(
 );
 
 function generateToken(address) {
-  const city = address.toUpperCase().slice(0, 4).padEnd(4, "X");
+  const city = address
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "")
+    .slice(0, 4)
+    .padEnd(4, "X");
   // console.log(city);
   const randomNumber = 10000000 + Math.floor(Math.random() * 90000000);
   // console.log(randomNumber)
